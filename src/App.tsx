@@ -8,10 +8,12 @@ import PersonasSidebar from './components/PersonasSidebar';
 import ExportPanel from './components/ExportPanel';
 import Board3DViewer from './components/Board3DViewer';
 import ComponentPropertiesPanel from './components/ComponentPropertiesPanel';
-import type { MeasurementStep, DiagnosticLog, Component3D } from './types';
-import { Activity, FileText, ClipboardList, Download, Box, Edit3 } from 'lucide-react';
+import CircuitBuilder from './components/CircuitBuilder';
+import PhotoCapture from './components/PhotoCapture';
+import type { MeasurementStep, DiagnosticLog, Component3D, Circuit } from './types';
+import { Activity, FileText, ClipboardList, Download, Box, Edit3, Wrench, Camera } from 'lucide-react';
 
-type View = 'visualization' | 'workflows' | 'logs' | 'export' | '3d';
+type View = 'visualization' | 'workflows' | 'logs' | 'export' | '3d' | 'builder' | 'capture';
 
 function App() {
   const [state, setState] = useAppState();
@@ -157,6 +159,30 @@ function App() {
     }
   };
 
+  const handleCircuitCreate = (circuit: Circuit) => {
+    setState(prevState => ({
+      ...prevState,
+      circuits: [...prevState.circuits, circuit],
+      activeCircuitId: circuit.id,
+    }));
+
+    addLog({
+      level: 'success',
+      message: `New circuit created: ${circuit.name}`,
+      details: `Components: ${circuit.components.length}, Nets: ${circuit.nets.length}`,
+    });
+
+    setActiveView('visualization');
+  };
+
+  const handlePhotoCapture = (photoData: { url: string; name: string; timestamp: Date }) => {
+    addLog({
+      level: 'info',
+      message: `Photo captured: ${photoData.name}`,
+      details: 'Photo capture is a stub implementation. Future versions will support component extraction and board analysis.',
+    });
+  };
+
   return (
     <div className="app">
       <header className="app-header">
@@ -198,6 +224,20 @@ function App() {
             >
               <Box size={18} />
               3D View
+            </button>
+            <button
+              className={`tab ${activeView === 'builder' ? 'active' : ''}`}
+              onClick={() => setActiveView('builder')}
+            >
+              <Wrench size={18} />
+              Circuit Builder
+            </button>
+            <button
+              className={`tab ${activeView === 'capture' ? 'active' : ''}`}
+              onClick={() => setActiveView('capture')}
+            >
+              <Camera size={18} />
+              Photo Capture
             </button>
             <button
               className={`tab ${activeView === 'workflows' ? 'active' : ''}`}
@@ -275,6 +315,12 @@ function App() {
             )}
             {activeView === 'export' && (
               <ExportPanel state={state} />
+            )}
+            {activeView === 'builder' && (
+              <CircuitBuilder onCircuitCreate={handleCircuitCreate} />
+            )}
+            {activeView === 'capture' && (
+              <PhotoCapture onPhotoCapture={handlePhotoCapture} />
             )}
           </div>
         </main>
