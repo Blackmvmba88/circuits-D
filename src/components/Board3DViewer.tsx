@@ -19,7 +19,7 @@ export function Board3DViewer({
         <ambientLight intensity={0.5} />
         <directionalLight position={[50, 100, 50]} intensity={0.8} />
 
-        {/* PCB plano */}
+        {/* PCB board */}
         <mesh receiveShadow position={[0, 0, 0]}>
           <boxGeometry
             args={[board.width, board.thickness, board.height]}
@@ -27,7 +27,7 @@ export function Board3DViewer({
           <meshStandardMaterial color="#0b5c3b" />
         </mesh>
 
-        {/* Componentes como cajas por ahora */}
+        {/* Components as boxes for now */}
         {board.components.map((c) => (
           <group key={c.id}>
             <mesh
