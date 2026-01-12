@@ -22,11 +22,12 @@ export default function ExportPanel({ state }: ExportPanelProps) {
       }
 
       switch (format) {
-        case 'pdf':
+        case 'pdf': {
           exportToPDF(state);
           setExportMessage('PDF exported successfully!');
           break;
-        case 'bom':
+        }
+        case 'bom': {
           const bom = exportToBOM(circuit);
           downloadFile(
             bom,
@@ -35,7 +36,8 @@ export default function ExportPanel({ state }: ExportPanelProps) {
           );
           setExportMessage('BOM exported successfully!');
           break;
-        case 'markdown':
+        }
+        case 'markdown': {
           const md = exportToMarkdown(state);
           downloadFile(
             md,
@@ -44,6 +46,7 @@ export default function ExportPanel({ state }: ExportPanelProps) {
           );
           setExportMessage('Markdown documentation exported successfully!');
           break;
+        }
       }
 
       setTimeout(() => setExportMessage(''), 3000);

@@ -9,14 +9,14 @@ export function useAppState() {
     try {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        const parsed = JSON.parse(saved);
+        const parsed = JSON.parse(saved) as AppState;
         // Convert date strings back to Date objects
-        parsed.circuits = parsed.circuits.map((circuit: any) => ({
+        parsed.circuits = parsed.circuits.map((circuit) => ({
           ...circuit,
           createdAt: new Date(circuit.createdAt),
           updatedAt: new Date(circuit.updatedAt),
         }));
-        parsed.diagnosticLogs = parsed.diagnosticLogs.map((log: any) => ({
+        parsed.diagnosticLogs = parsed.diagnosticLogs.map((log) => ({
           ...log,
           timestamp: new Date(log.timestamp),
         }));
