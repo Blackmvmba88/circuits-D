@@ -1002,3 +1002,209 @@
   font-weight: 600;
   color: #667eea;
 }
+
+/* Component Properties Panel */
+.component-properties-panel {
+  width: 320px;
+  background: white;
+  border-left: 1px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.component-properties-panel.empty {
+  width: 320px;
+  background: white;
+  border-left: 1px solid #e0e0e0;
+}
+
+.component-properties-panel .panel-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-bottom: 1px solid #e0e0e0;
+  background: #f8f9fa;
+}
+
+.component-properties-panel .panel-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.component-properties-panel .panel-content {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.component-properties-panel .empty-message {
+  color: #999;
+  text-align: center;
+  padding: 2rem 1rem;
+  font-size: 0.875rem;
+}
+
+.property-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.property-section h4 {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.property-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.property-field label {
+  font-size: 0.75rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.property-field input,
+.property-field select {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-family: inherit;
+}
+
+.property-field input:focus,
+.property-field select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.property-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.rotation-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.btn-rotate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btn-rotate:hover {
+  background: #5568d3;
+}
+
+.rotation-display {
+  text-align: center;
+  font-size: 0.875rem;
+  color: #666;
+  padding: 0.5rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+}
+
+.nets-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.net-badge {
+  display: inline-block;
+  padding: 0.25rem 0.625rem;
+  background: #e3f2fd;
+  color: #1976d2;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.dimensions-display {
+  padding: 0.5rem;
+  background: #f8f9fa;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #666;
+  font-family: 'Monaco', 'Courier New', monospace;
+}
+
+/* 3D View Container */
+.view-3d-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.view-3d-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: white;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.btn-edit-mode {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: white;
+  color: #667eea;
+  border: 1px solid #667eea;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-edit-mode:hover {
+  background: #f0f3ff;
+}
+
+.btn-edit-mode.active {
+  background: #667eea;
+  color: white;
+}
+
+.view-3d-main {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}

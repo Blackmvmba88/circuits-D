@@ -4,9 +4,10 @@ import { Circle } from 'lucide-react';
 interface ComponentVisualizationProps {
   components: Component[];
   nets: Net[];
+  onComponentClick?: (componentId: string) => void;
 }
 
-export default function ComponentVisualization({ components, nets }: ComponentVisualizationProps) {
+export default function ComponentVisualization({ components, nets, onComponentClick }: ComponentVisualizationProps) {
   return (
     <div className="component-visualization">
       <div className="visualization-header">
@@ -56,7 +57,11 @@ export default function ComponentVisualization({ components, nets }: ComponentVi
           
           {/* Render components */}
           {components.map((comp) => (
-            <g key={comp.id}>
+            <g
+              key={comp.id}
+              onClick={() => onComponentClick?.(comp.id)}
+              style={{ cursor: onComponentClick ? 'pointer' : 'default' }}
+            >
               {comp.type === 'Resistor' && (
                 <>
                   <rect
@@ -152,7 +157,12 @@ export default function ComponentVisualization({ components, nets }: ComponentVi
         <h3>Component Details</h3>
         <div className="component-cards">
           {components.map((comp) => (
-            <div key={comp.id} className={`component-card ${comp.connected ? 'connected' : 'disconnected'}`}>
+            <div
+              key={comp.id}
+              className={`component-card ${comp.connected ? 'connected' : 'disconnected'}`}
+              onClick={() => onComponentClick?.(comp.id)}
+              style={{ cursor: onComponentClick ? 'pointer' : 'default' }}
+            >
               <div className="card-header">
                 <span className="component-name">{comp.name}</span>
                 <span className={`status-badge ${comp.connected ? 'connected' : 'disconnected'}`}>

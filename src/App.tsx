@@ -7,14 +7,16 @@ import DiagnosticLogging from './components/DiagnosticLogging';
 import PersonasSidebar from './components/PersonasSidebar';
 import ExportPanel from './components/ExportPanel';
 import Board3DViewer from './components/Board3DViewer';
-import type { MeasurementStep, DiagnosticLog } from './types';
-import { Activity, FileText, ClipboardList, Download, Box } from 'lucide-react';
+import ComponentPropertiesPanel from './components/ComponentPropertiesPanel';
+import type { MeasurementStep, DiagnosticLog, Component3D } from './types';
+import { Activity, FileText, ClipboardList, Download, Box, Edit3 } from 'lucide-react';
 
 type View = 'visualization' | 'workflows' | 'logs' | 'export' | '3d';
 
 function App() {
   const [state, setState] = useAppState();
   const [activeView, setActiveView] = useState<View>('visualization');
+  const [editMode, setEditMode] = useState(false);
 
   const activeCircuit = state.circuits.find(c => c.id === state.activeCircuitId);
 
@@ -119,6 +121,42 @@ function App() {
     }
   };
 
+  const handleComponentUpdate = (componentId: string, updates: Partial<Component3D>) => {
+    setState(prevState => ({
+      ...prevState,
+      board3D: prevState.board3D
+        ? {
+            ...prevState.board3D,
+            components: prevState.board3D.components.map(c =>
+              c.id === componentId ? { ...c, ...updates } : c
+            ),
+          }
+        : undefined,
+    }));
+
+    // Add log entry
+    const component = state.board3D?.components.find(c => c.id === componentId);
+    if (component) {
+      addLog({
+        level: 'info',
+        message: `Component updated: ${component.refDes}`,
+        details: JSON.stringify(updates, null, 2),
+      });
+    }
+  };
+
+  const handleComponent2DClick = (componentId: string) => {
+    // Find corresponding 3D component by refDes
+    const component2D = activeCircuit?.components.find(c => c.id === componentId);
+    if (component2D && state.board3D) {
+      const component3D = state.board3D.components.find(c => c.refDes === component2D.name);
+      if (component3D) {
+        handleSelectComponent(component3D.id);
+        setActiveView('3d'); // Switch to 3D view
+      }
+    }
+  };
+
   return (
     <div className="app">
       <header className="app-header">
@@ -189,14 +227,37 @@ function App() {
               <ComponentVisualization
                 components={activeCircuit.components}
                 nets={activeCircuit.nets}
+                onComponentClick={handleComponent2DClick}
               />
             )}
             {activeView === '3d' && state.board3D && (
-              <Board3DViewer
-                board={state.board3D}
-                selectedComponentId={state.selectedComponentId}
-                onSelectComponent={handleSelectComponent}
-              />
+              <div className="view-3d-container">
+                <div className="view-3d-toolbar">
+                  <button
+                    className={`btn-edit-mode ${editMode ? 'active' : ''}`}
+                    onClick={() => setEditMode(!editMode)}
+                    title={editMode ? 'Exit Edit Mode' : 'Enter Edit Mode'}
+                  >
+                    <Edit3 size={18} />
+                    {editMode ? 'View Mode' : 'Edit Mode'}
+                  </button>
+                </div>
+                <div className="view-3d-main">
+                  <Board3DViewer
+                    board={state.board3D}
+                    selectedComponentId={state.selectedComponentId}
+                    onSelectComponent={handleSelectComponent}
+                    onComponentUpdate={handleComponentUpdate}
+                    editMode={editMode}
+                  />
+                  {editMode && (
+                    <ComponentPropertiesPanel
+                      component={state.board3D.components.find(c => c.id === state.selectedComponentId)}
+                      onUpdate={handleComponentUpdate}
+                    />
+                  )}
+                </div>
+              </div>
             )}
             {activeView === 'workflows' && (
               <MeasurementWorkflows
