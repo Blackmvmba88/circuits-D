@@ -58,9 +58,10 @@ function ComponentMesh({
 
   return (
     <group>
-      {isSelected && editMode && meshRef.current && (
+      {isSelected && editMode && (
         <TransformControls
-          object={meshRef.current}
+          // @ts-ignore - TransformControls accepts a ref
+          object={meshRef}
           mode="translate"
           translationSnap={5}
           rotationSnap={Math.PI / 2}
