@@ -10,6 +10,14 @@ Interactive cognitive electronics workbench for documenting, measuring and under
 - Visual representation of nets and connections
 - Detailed component cards with specifications
 
+### 📦 3D Board Viewer (NEW!)
+- Interactive 3D visualization of PCB boards
+- Real-time component rendering with Three.js
+- OrbitControls for intuitive camera navigation
+- Component selection and highlighting
+- Visual component labels (RefDes)
+- Integrated with diagnostic logging
+
 ### 📋 Measurement Workflows
 - Step-by-step guided measurement procedures
 - Progress tracking and status indicators
@@ -44,6 +52,7 @@ Interactive cognitive electronics workbench for documenting, measuring and under
 - **Styling**: Custom CSS
 - **Icons**: Lucide React
 - **PDF Generation**: jsPDF
+- **3D Graphics**: Three.js + React Three Fiber + Drei
 - **Build Tool**: Vite 7.3
 
 ## Getting Started
@@ -85,6 +94,7 @@ circuits-D/
 ├── src/
 │   ├── components/          # React components
 │   │   ├── ComponentVisualization.tsx
+│   │   ├── Board3DViewer.tsx
 │   │   ├── MeasurementWorkflows.tsx
 │   │   ├── DiagnosticLogging.tsx
 │   │   ├── PersonasSidebar.tsx
@@ -105,13 +115,20 @@ circuits-D/
 ├── index.html              # HTML entry point
 ├── package.json            # Dependencies and scripts
 ├── tsconfig.json           # TypeScript configuration
-└── vite.config.ts          # Vite configuration
+├── vite.config.ts          # Vite configuration
+└── ROADMAP.md              # 3D Viewer development roadmap
 ```
 
 ## Usage
 
-### Circuit View
+### 2D Schematic View
 View and interact with circuit schematics, components, and nets. See real-time connection status and component specifications.
+
+### 3D Board View
+Visualize your PCB in 3D with interactive camera controls. Click on components to select them and view their details in the diagnostic logs. Use mouse/trackpad to:
+- **Rotate**: Left-click and drag
+- **Pan**: Right-click and drag (or Shift + left-click)
+- **Zoom**: Scroll wheel
 
 ### Workflows
 Create and execute measurement workflows with step-by-step procedures. Track progress and record measurements against expected values.
@@ -141,6 +158,8 @@ Generate professional documentation in multiple formats:
 
 ### Data Models
 - `Circuit`: Complete circuit definition with components, nets, and test points
+- `Board3D`: 3D board representation with dimensions and 3D components
+- `Component3D`: 3D component with position, rotation, size, and net connections
 - `MeasurementWorkflow`: Guided measurement procedures with steps
 - `DiagnosticLog`: System activity and event logging
 - `Persona`: Expert role definitions
@@ -148,13 +167,18 @@ Generate professional documentation in multiple formats:
 
 ## Future Enhancements
 
+See [ROADMAP.md](./ROADMAP.md) for detailed 3D viewer development plans.
+
 - Backend integration for data synchronization
 - Real-time hardware connectivity
 - Advanced circuit simulation
 - Collaborative features
-- Export to additional formats (Gerber, KiCad, etc.)
+- 3D layout editor with component placement
+- Import/Export to PCB design tools (KiCad, Gerber, etc.)
 - Circuit analysis algorithms
-- Component library management
+- Component library management with 3D models
+- Heatmap visualization (power, signal integrity)
+- Multi-layer PCB visualization
 
 ## Contributing
 
