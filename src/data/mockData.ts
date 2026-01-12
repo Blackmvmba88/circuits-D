@@ -1,4 +1,4 @@
-import type { Circuit, Probe, Persona, MeasurementWorkflow, DiagnosticLog, AppState } from '../types';
+import type { Circuit, Probe, Persona, MeasurementWorkflow, DiagnosticLog, AppState, Board3D, Component3D } from '../types';
 
 export const mockComponents = [
   {
@@ -217,6 +217,55 @@ export const mockDiagnosticLogs: DiagnosticLog[] = [
   },
 ];
 
+// 3D Board Mock Data
+export const mockComponents3D: Component3D[] = [
+  {
+    id: '3d-c1',
+    refDes: 'R1',
+    type: 'Resistor',
+    position: { x: -20, y: 2, z: -10 },
+    rotation: { x: 0, y: 0, z: 0 },
+    size: { x: 8, y: 3, z: 3 },
+    netIds: ['N1', 'N3'],
+  },
+  {
+    id: '3d-c2',
+    refDes: 'C1',
+    type: 'Capacitor',
+    position: { x: 10, y: 2, z: -10 },
+    rotation: { x: 0, y: 0, z: 0 },
+    size: { x: 5, y: 6, z: 5 },
+    netIds: ['N1', 'N2'],
+  },
+  {
+    id: '3d-c3',
+    refDes: 'U1',
+    type: 'IC',
+    position: { x: -10, y: 3, z: 10 },
+    rotation: { x: 0, y: 0, z: 0 },
+    size: { x: 15, y: 4, z: 10 },
+    netIds: ['N1', 'N2', 'N3'],
+  },
+  {
+    id: '3d-c4',
+    refDes: 'Q1',
+    type: 'Transistor',
+    position: { x: 20, y: 2, z: 5 },
+    rotation: { x: 0, y: 0, z: 0 },
+    size: { x: 4, y: 4, z: 4 },
+    netIds: ['N2', 'N3'],
+  },
+];
+
+export const mockBoard3D: Board3D = {
+  id: 'board-1',
+  name: 'Audio Amplifier PCB',
+  width: 80,
+  height: 60,
+  thickness: 1.6,
+  components: mockComponents3D,
+};
+
 export const initialAppState: AppState = {
   circuits: mockCircuits,
   workflows: mockWorkflows,
@@ -225,4 +274,6 @@ export const initialAppState: AppState = {
   probes: mockProbes,
   activeCircuitId: 'circuit-1',
   activeWorkflowId: 'workflow-1',
+  board3D: mockBoard3D,
+  selectedComponentId: undefined,
 };

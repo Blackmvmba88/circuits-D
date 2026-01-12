@@ -83,6 +83,25 @@ export interface Persona {
   active: boolean;
 }
 
+export interface Component3D {
+  id: string;
+  refDes: string;      // R1, C3, U1...
+  type: string;
+  position: { x: number; y: number; z: number };
+  rotation: { x: number; y: number; z: number };
+  size: { x: number; y: number; z: number }; // bounding box simple
+  netIds: string[];    // a qué redes pertenece
+}
+
+export interface Board3D {
+  id: string;
+  name: string;
+  width: number;
+  height: number;
+  thickness: number;
+  components: Component3D[];
+}
+
 export interface AppState {
   circuits: Circuit[];
   workflows: MeasurementWorkflow[];
@@ -91,4 +110,6 @@ export interface AppState {
   probes: Probe[];
   activeCircuitId?: string;
   activeWorkflowId?: string;
+  board3D?: Board3D;
+  selectedComponentId?: string;
 }
