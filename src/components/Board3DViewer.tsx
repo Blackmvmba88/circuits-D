@@ -60,7 +60,7 @@ function ComponentMesh({
     <group>
       {isSelected && editMode && (
         <TransformControls
-          // @ts-ignore - TransformControls accepts a ref
+          // @ts-expect-error - TransformControls type definition issue with ref objects
           object={meshRef}
           mode="translate"
           translationSnap={5}
