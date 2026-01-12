@@ -1,73 +1,173 @@
-# React + TypeScript + Vite
+# circuits-D
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Interactive cognitive electronics workbench for documenting, measuring and understanding real circuits. Bridges physical boards with digital analysis, guided measurement, procedural diagnostics and exportable documentation.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### 🔌 Component Visualization
+- Interactive circuit schematic with SVG rendering
+- Real-time component status indicators
+- Visual representation of nets and connections
+- Detailed component cards with specifications
 
-## React Compiler
+### 📋 Measurement Workflows
+- Step-by-step guided measurement procedures
+- Progress tracking and status indicators
+- Expected vs. actual value comparison
+- Interactive workflow management
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 📊 Diagnostic Logging
+- Real-time activity logging with timestamps
+- Four log levels: Info, Success, Warning, Error
+- Expandable log details
+- Filterable and clearable log history
 
-## Expanding the ESLint configuration
+### 👥 Personas System
+- Multiple expert personas with specialized roles
+- Activate/deactivate personas as needed
+- Role-based guidance (Circuit Designer, Test Engineer, Debug Specialist)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 📤 Export Capabilities
+- **PDF Export**: Complete circuit documentation
+- **BOM Export**: Bill of Materials in Markdown format
+- **Markdown Export**: Comprehensive documentation with workflows
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 💾 State Persistence
+- Automatic state saving to localStorage
+- Persist circuits, workflows, logs, and personas
+- Seamless session restoration
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## Tech Stack
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+- **Framework**: Vite + React 19.2
+- **Language**: TypeScript 5.9
+- **Styling**: Custom CSS
+- **Icons**: Lucide React
+- **PDF Generation**: jsPDF
+- **Build Tool**: Vite 7.3
+
+## Getting Started
+
+### Prerequisites
+- Node.js 18+ 
+- npm 9+
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/Blackmvmba88/circuits-D.git
+cd circuits-D
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Build for production
+npm run build
+
+# Run linter
+npm run lint
+
+# Preview production build
+npm run preview
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Development Server
+The app will be available at `http://localhost:5173/`
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Project Structure
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+circuits-D/
+├── src/
+│   ├── components/          # React components
+│   │   ├── ComponentVisualization.tsx
+│   │   ├── MeasurementWorkflows.tsx
+│   │   ├── DiagnosticLogging.tsx
+│   │   ├── PersonasSidebar.tsx
+│   │   └── ExportPanel.tsx
+│   ├── data/               # Mock data and initial state
+│   │   └── mockData.ts
+│   ├── hooks/              # Custom React hooks
+│   │   └── useAppState.ts
+│   ├── types/              # TypeScript interfaces
+│   │   └── index.ts
+│   ├── utils/              # Utility functions
+│   │   └── export.ts
+│   ├── App.tsx             # Main application component
+│   ├── App.css             # Application styles
+│   ├── main.tsx            # Application entry point
+│   └── index.css           # Global styles
+├── public/                 # Static assets
+├── index.html              # HTML entry point
+├── package.json            # Dependencies and scripts
+├── tsconfig.json           # TypeScript configuration
+└── vite.config.ts          # Vite configuration
+```
+
+## Usage
+
+### Circuit View
+View and interact with circuit schematics, components, and nets. See real-time connection status and component specifications.
+
+### Workflows
+Create and execute measurement workflows with step-by-step procedures. Track progress and record measurements against expected values.
+
+### Diagnostic Logs
+Monitor all system activities, measurement results, and events in real-time. Filter by severity and expand for detailed information.
+
+### Personas
+Activate different expert personas to get specialized guidance:
+- **Circuit Designer**: Topology and component selection
+- **Test Engineer**: Measurement procedures and validation
+- **Debug Specialist**: Troubleshooting and diagnostics
+
+### Export
+Generate professional documentation in multiple formats:
+- **PDF**: Complete circuit documentation
+- **BOM**: Component bill of materials
+- **Markdown**: Detailed technical documentation
+
+## Architecture
+
+### Modular Design
+- **Separation of Concerns**: Clear distinction between data, logic, and presentation
+- **Type Safety**: Full TypeScript coverage with strict mode
+- **Component Reusability**: Self-contained, reusable React components
+- **State Management**: Custom hook with localStorage persistence
+
+### Data Models
+- `Circuit`: Complete circuit definition with components, nets, and test points
+- `MeasurementWorkflow`: Guided measurement procedures with steps
+- `DiagnosticLog`: System activity and event logging
+- `Persona`: Expert role definitions
+- `AppState`: Global application state
+
+## Future Enhancements
+
+- Backend integration for data synchronization
+- Real-time hardware connectivity
+- Advanced circuit simulation
+- Collaborative features
+- Export to additional formats (Gerber, KiCad, etc.)
+- Circuit analysis algorithms
+- Component library management
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is open source and available under the MIT License.
+
+## Author
+
+**Blackmvmba88**
+
+---
+
+*Built with ❤️ using Vite, React, and TypeScript*
