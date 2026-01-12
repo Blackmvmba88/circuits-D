@@ -6,10 +6,11 @@ import MeasurementWorkflows from './components/MeasurementWorkflows';
 import DiagnosticLogging from './components/DiagnosticLogging';
 import PersonasSidebar from './components/PersonasSidebar';
 import ExportPanel from './components/ExportPanel';
+import Board3DViewer from './components/Board3DViewer';
 import type { MeasurementStep, DiagnosticLog } from './types';
-import { Activity, FileText, ClipboardList, Download } from 'lucide-react';
+import { Activity, FileText, ClipboardList, Download, Box } from 'lucide-react';
 
-type View = 'visualization' | 'workflows' | 'logs' | 'export';
+type View = 'visualization' | 'workflows' | 'logs' | 'export' | '3d';
 
 function App() {
   const [state, setState] = useAppState();
@@ -101,6 +102,23 @@ function App() {
     }));
   };
 
+  const handleSelectComponent = (componentId: string) => {
+    setState(prevState => ({
+      ...prevState,
+      selectedComponentId: componentId,
+    }));
+    
+    // Add log entry
+    const component = state.board3D?.components.find(c => c.id === componentId);
+    if (component) {
+      addLog({
+        level: 'info',
+        message: `3D Component selected: ${component.refDes}`,
+        details: `Type: ${component.type}`,
+      });
+    }
+  };
+
   return (
     <div className="app">
       <header className="app-header">
@@ -134,7 +152,14 @@ function App() {
               onClick={() => setActiveView('visualization')}
             >
               <Activity size={18} />
-              Circuit View
+              2D Schematic
+            </button>
+            <button
+              className={`tab ${activeView === '3d' ? 'active' : ''}`}
+              onClick={() => setActiveView('3d')}
+            >
+              <Box size={18} />
+              3D View
             </button>
             <button
               className={`tab ${activeView === 'workflows' ? 'active' : ''}`}
@@ -164,6 +189,13 @@ function App() {
               <ComponentVisualization
                 components={activeCircuit.components}
                 nets={activeCircuit.nets}
+              />
+            )}
+            {activeView === '3d' && state.board3D && (
+              <Board3DViewer
+                board={state.board3D}
+                selectedComponentId={state.selectedComponentId}
+                onSelectComponent={handleSelectComponent}
               />
             )}
             {activeView === 'workflows' && (
