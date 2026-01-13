@@ -1,6 +1,130 @@
 # circuits-D
+## The Cognitive Debugger for Real Electronics
+
+> *"Humans no longer just design circuits — now they dialogue with them."*
 
 Interactive cognitive electronics workbench for documenting, measuring and understanding real circuits. Bridges physical boards with digital analysis, guided measurement, procedural diagnostics and exportable documentation.
+
+---
+
+## 🧠 Why This Exists
+
+In software, we have debuggers. In electronics, **we don't**.
+
+Until now.
+
+**circuits-D** is not a simulator. It's not a CAD tool. It's not a schematic viewer.  
+It's a **cognitive system** for understanding real, physical circuits.
+
+### The Problem We're Solving
+
+Electronic engineering has a documentation gap:
+
+- **Physical PCBs don't have debuggers** — you're left with a multimeter and intuition
+- **Measurement is a mental flow**, not just meter readings
+- **Real boards are hard to document** — schematics are abstract, boards are physical
+- **Diagnosis is an art**, not a process
+- **CV + measurement + diagnostics** don't exist as one integrated workflow
+- **The netlist is invisible** on the physical board, yet it's everything
+
+This is the pain. circuits-D is the solution.
+
+### The Cognitive Twist
+
+We bridge three worlds:
+
+```
+Physical Hardware → Software Analysis → Human Understanding
+```
+
+You don't just measure a circuit. You **converse** with it.  
+You don't just see components. You **understand the system**.  
+You don't just troubleshoot. You **think like a diagnostic engineer**.
+
+This is **Cognitive Electronics** — a new category of tools that makes understanding PCBs as natural as reading a map.
+
+---
+
+## 🎯 For Whom
+
+✓ **Test Engineers** — measure and validate systematically  
+✓ **Repair Labs** — diagnose and fix faster  
+✓ **Embedded Developers** — understand hardware context  
+✓ **Students** — learn electronics visually  
+✓ **Hardware Startups** — document and iterate rapidly  
+✓ **PCB Manufacturers** — quality assurance workflows  
+✓ **DIY Electronics** — explore and experiment  
+✓ **Makerspaces** — teach practical electronics  
+
+## ⚡ What It Enables
+
+✓ **Understand circuits** — not just view them  
+✓ **Debug physical boards** — with guided workflows  
+✓ **Measure & compare** — expected vs. actual values  
+✓ **Export documentation** — BOM, reports, PDFs  
+✓ **Train workflows** — repeatable measurement procedures  
+✓ **Explore nets in 3D** — see connections spatially  
+✓ **Learn electronics visually** — intuitive representation  
+✓ **Bridge abstract to physical** — netlist to board  
+
+---
+
+## 🧩 The Netlist: The Hidden Hero
+
+Everything in electronics revolves around the **netlist** — the map of electrical connections.
+
+But on a physical board, the netlist is **invisible**. You see components and traces, but not the logical network.
+
+**circuits-D treats the netlist with cognitive care:**
+
+- Nets are **first-class citizens** in our data model
+- Every component knows its net connections
+- Measurement workflows reference nets, not just pins
+- 3D visualization shows net relationships spatially
+- You can **see** what's supposed to be connected
+
+The netlist isn't just data. It's the **semantic layer** of the circuit.
+
+---
+
+## 🚀 The Ambition
+
+We're building the **complete cognitive pipeline** for electronics:
+
+**Simulation** + **Measurement** + **Diagnostics** + **Documentation** + **Export** + **Computer Vision**
+
+End to end. No one has done this.
+
+### The Inevitable Future
+
+> *"In the future, PCBs won't just be designed — they'll be read."*
+
+> *"Measurements won't be manual acts — they'll be informational flows."*
+
+> *"Engineers won't be technicians — they'll be cognitive conductors of hardware."*
+
+This isn't just a tool. It's where electronics is going.
+
+---
+
+## 🛠️ The Engineer's Journey
+
+Here's how a real engineer works with circuits-D:
+
+1. **See** a physical PCB that needs understanding
+2. **Capture** it — upload a photo (Phase 0, CV coming)
+3. **Document** it — define components, nets, connections
+4. **Build** the netlist — create the cognitive map
+5. **Measure** systematically — guided workflows with step-by-step procedures
+6. **Compare** — expected vs. actual values
+7. **Diagnose** — identify faults with context
+8. **Export** — BOM, reports, documentation
+9. **Understand** — not just data, but meaning
+
+What used to be: *mental notes + multimeter + suffering*  
+Is now: **A fluid, documented, repeatable cognitive workflow.**
+
+---
 
 ## Features
 
