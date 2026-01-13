@@ -55,7 +55,11 @@ export interface MeasurementStep {
   expectedValue?: string;
   actualValue?: string;
   status: 'pending' | 'in-progress' | 'complete' | 'failed';
+  netId?: string; // Link to specific net
+  componentId?: string; // Link to specific component
 }
+
+export type MeasurementSource = 'manual' | 'serial' | 'usb' | 'ble';
 
 export interface MeasurementWorkflow {
   id: string;
@@ -63,6 +67,7 @@ export interface MeasurementWorkflow {
   circuitId: string;
   steps: MeasurementStep[];
   status: 'not-started' | 'in-progress' | 'complete';
+  source?: MeasurementSource; // How measurements are obtained
 }
 
 export interface DiagnosticLog {

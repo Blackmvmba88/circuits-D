@@ -7,14 +7,18 @@ import DiagnosticLogging from './components/DiagnosticLogging';
 import PersonasSidebar from './components/PersonasSidebar';
 import ExportPanel from './components/ExportPanel';
 import Board3DViewer from './components/Board3DViewer';
-import type { MeasurementStep, DiagnosticLog } from './types';
-import { Activity, FileText, ClipboardList, Download, Box } from 'lucide-react';
+import ComponentPropertiesPanel from './components/ComponentPropertiesPanel';
+import CircuitBuilder from './components/CircuitBuilder';
+import PhotoCapture from './components/PhotoCapture';
+import type { MeasurementStep, DiagnosticLog, Component3D, Circuit } from './types';
+import { Activity, FileText, ClipboardList, Download, Box, Edit3, Wrench, Camera } from 'lucide-react';
 
-type View = 'visualization' | 'workflows' | 'logs' | 'export' | '3d';
+type View = 'visualization' | 'workflows' | 'logs' | 'export' | '3d' | 'builder' | 'capture';
 
 function App() {
   const [state, setState] = useAppState();
   const [activeView, setActiveView] = useState<View>('visualization');
+  const [editMode, setEditMode] = useState(false);
 
   const activeCircuit = state.circuits.find(c => c.id === state.activeCircuitId);
 
@@ -119,6 +123,66 @@ function App() {
     }
   };
 
+  const handleComponentUpdate = (componentId: string, updates: Partial<Component3D>) => {
+    setState(prevState => ({
+      ...prevState,
+      board3D: prevState.board3D
+        ? {
+            ...prevState.board3D,
+            components: prevState.board3D.components.map(c =>
+              c.id === componentId ? { ...c, ...updates } : c
+            ),
+          }
+        : undefined,
+    }));
+
+    // Add log entry
+    const component = state.board3D?.components.find(c => c.id === componentId);
+    if (component) {
+      addLog({
+        level: 'info',
+        message: `Component updated: ${component.refDes}`,
+        details: JSON.stringify(updates, null, 2),
+      });
+    }
+  };
+
+  const handleComponent2DClick = (componentId: string) => {
+    // Find corresponding 3D component by refDes
+    const component2D = activeCircuit?.components.find(c => c.id === componentId);
+    if (component2D && state.board3D) {
+      const component3D = state.board3D.components.find(c => c.refDes === component2D.name);
+      if (component3D) {
+        handleSelectComponent(component3D.id);
+        setActiveView('3d'); // Switch to 3D view
+      }
+    }
+  };
+
+  const handleCircuitCreate = (circuit: Circuit) => {
+    setState(prevState => ({
+      ...prevState,
+      circuits: [...prevState.circuits, circuit],
+      activeCircuitId: circuit.id,
+    }));
+
+    addLog({
+      level: 'success',
+      message: `New circuit created: ${circuit.name}`,
+      details: `Components: ${circuit.components.length}, Nets: ${circuit.nets.length}`,
+    });
+
+    setActiveView('visualization');
+  };
+
+  const handlePhotoCapture = (photoData: { url: string; name: string; timestamp: Date }) => {
+    addLog({
+      level: 'info',
+      message: `Photo captured: ${photoData.name}`,
+      details: 'Photo capture is a stub implementation. Future versions will support component extraction and board analysis.',
+    });
+  };
+
   return (
     <div className="app">
       <header className="app-header">
@@ -162,6 +226,20 @@ function App() {
               3D View
             </button>
             <button
+              className={`tab ${activeView === 'builder' ? 'active' : ''}`}
+              onClick={() => setActiveView('builder')}
+            >
+              <Wrench size={18} />
+              Circuit Builder
+            </button>
+            <button
+              className={`tab ${activeView === 'capture' ? 'active' : ''}`}
+              onClick={() => setActiveView('capture')}
+            >
+              <Camera size={18} />
+              Photo Capture
+            </button>
+            <button
               className={`tab ${activeView === 'workflows' ? 'active' : ''}`}
               onClick={() => setActiveView('workflows')}
             >
@@ -189,14 +267,37 @@ function App() {
               <ComponentVisualization
                 components={activeCircuit.components}
                 nets={activeCircuit.nets}
+                onComponentClick={handleComponent2DClick}
               />
             )}
             {activeView === '3d' && state.board3D && (
-              <Board3DViewer
-                board={state.board3D}
-                selectedComponentId={state.selectedComponentId}
-                onSelectComponent={handleSelectComponent}
-              />
+              <div className="view-3d-container">
+                <div className="view-3d-toolbar">
+                  <button
+                    className={`btn-edit-mode ${editMode ? 'active' : ''}`}
+                    onClick={() => setEditMode(!editMode)}
+                    title={editMode ? 'Exit Edit Mode' : 'Enter Edit Mode'}
+                  >
+                    <Edit3 size={18} />
+                    {editMode ? 'View Mode' : 'Edit Mode'}
+                  </button>
+                </div>
+                <div className="view-3d-main">
+                  <Board3DViewer
+                    board={state.board3D}
+                    selectedComponentId={state.selectedComponentId}
+                    onSelectComponent={handleSelectComponent}
+                    onComponentUpdate={handleComponentUpdate}
+                    editMode={editMode}
+                  />
+                  {editMode && (
+                    <ComponentPropertiesPanel
+                      component={state.board3D.components.find(c => c.id === state.selectedComponentId)}
+                      onUpdate={handleComponentUpdate}
+                    />
+                  )}
+                </div>
+              </div>
             )}
             {activeView === 'workflows' && (
               <MeasurementWorkflows
@@ -214,6 +315,12 @@ function App() {
             )}
             {activeView === 'export' && (
               <ExportPanel state={state} />
+            )}
+            {activeView === 'builder' && (
+              <CircuitBuilder onCircuitCreate={handleCircuitCreate} />
+            )}
+            {activeView === 'capture' && (
+              <PhotoCapture onPhotoCapture={handlePhotoCapture} />
             )}
           </div>
         </main>
