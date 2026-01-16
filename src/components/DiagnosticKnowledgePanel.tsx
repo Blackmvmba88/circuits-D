@@ -36,6 +36,7 @@ export default function DiagnosticKnowledgePanel({
 }: DiagnosticKnowledgePanelProps) {
   const [isAddingRule, setIsAddingRule] = useState(false);
   const [showEvaluation, setShowEvaluation] = useState(false);
+  const [ruleCounter, setRuleCounter] = useState(0);
 
   const rules = diagnosticKnowledge?.rules || [];
 
@@ -52,14 +53,16 @@ export default function DiagnosticKnowledgePanel({
   };
 
   const handleCreateRule = () => {
-    // Create a new empty rule
+    // Create a new empty rule with unique IDs using counter
+    setRuleCounter(prev => prev + 1);
+    const uniqueId = `${circuit.id}-${ruleCounter}`;
     const newRule: CircuitRule = {
-      id: `rule-${Date.now()}`,
+      id: `rule-${uniqueId}`,
       name: 'New Circuit Rule',
       circuitId: circuit.id,
       conditions: [],
       consequence: {
-        id: `consequence-${Date.now()}`,
+        id: `consequence-${uniqueId}`,
         type: 'functional_failure',
         severity: 'warning',
         affectedNetIds: [],

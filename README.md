@@ -307,9 +307,10 @@ circuits-D/
 │   ├── components/          # React components
 │   │   ├── ComponentVisualization.tsx
 │   │   ├── Board3DViewer.tsx
-│   │   ├── ComponentPropertiesPanel.tsx  # NEW
-│   │   ├── CircuitBuilder.tsx            # NEW
-│   │   ├── PhotoCapture.tsx              # NEW
+│   │   ├── ComponentPropertiesPanel.tsx  # 3D component editor
+│   │   ├── CircuitBuilder.tsx            # Circuit creation UI
+│   │   ├── PhotoCapture.tsx              # Photo upload interface
+│   │   ├── DiagnosticKnowledgePanel.tsx  # NEW - Cognitive diagnostics
 │   │   ├── MeasurementWorkflows.tsx
 │   │   ├── DiagnosticLogging.tsx
 │   │   ├── PersonasSidebar.tsx
@@ -321,7 +322,8 @@ circuits-D/
 │   ├── types/              # TypeScript interfaces
 │   │   └── index.ts
 │   ├── utils/              # Utility functions
-│   │   └── export.ts
+│   │   ├── export.ts
+│   │   └── diagnosticEngine.ts  # NEW - Rule evaluation engine
 │   ├── App.tsx             # Main application component
 │   ├── App.css             # Application styles
 │   ├── main.tsx            # Application entry point
@@ -370,6 +372,36 @@ Upload photos of physical PCBs for future analysis (Phase 0 stub):
 
 ### Workflows
 Create and execute measurement workflows with step-by-step procedures. Track progress and record measurements against expected values.
+
+### Cognitive Diagnostics (NEW!)
+**The Semantic Layer for Circuit Understanding**
+
+Define and evaluate causal relationships in your circuits:
+
+1. **Create Rules**: Click "Add Rule" to define new causal relationships
+   - Conditions: "If this net voltage is < 2.0V..."
+   - Consequences: "...then LED cannot illuminate"
+   - Categories: Power, Signal, Timing, Filtering, etc.
+
+2. **Automatic Evaluation**: Rules are continuously evaluated against:
+   - Current net voltages
+   - Measurement results
+   - Component states
+   
+3. **Live Diagnostics**: When conditions are met:
+   - Rules "trigger" and display in the "Active Diagnoses" section
+   - Severity indicators (critical/warning/info) show impact
+   - Detailed explanations describe the "why" behind the failure
+   
+4. **Example Rule** (from LED circuit):
+   ```
+   IF: VCC voltage is below 2.0V
+   THEN: LED will not illuminate
+   WHY: Insufficient voltage to overcome LED forward voltage drop 
+        (typically 1.8-2.0V) plus resistor voltage drop
+   ```
+
+This transforms circuit diagnosis from an art into a documented, repeatable science.
 
 ### Diagnostic Logs
 Monitor all system activities, measurement results, and events in real-time. Filter by severity and expand for detailed information.
