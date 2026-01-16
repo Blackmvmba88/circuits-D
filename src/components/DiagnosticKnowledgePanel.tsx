@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { 
   Brain, 
   Plus, 
@@ -9,7 +9,8 @@ import {
   Zap,
   TrendingDown,
   Radio,
-  Activity
+  Activity,
+  AlertTriangle
 } from 'lucide-react';
 import type { 
   CircuitRule, 
@@ -17,7 +18,7 @@ import type {
   MeasurementStep,
   DiagnosticKnowledge
 } from '../types';
-import { evaluateAllRules, explainRuleTrigger } from '../utils/diagnosticEngine';
+import { evaluateAllRules, explainRuleTrigger, validateRule } from '../utils/diagnosticEngine';
 
 interface DiagnosticKnowledgePanelProps {
   circuit: Circuit;
@@ -37,15 +38,40 @@ export default function DiagnosticKnowledgePanel({
   const [isAddingRule, setIsAddingRule] = useState(false);
   const [showEvaluation, setShowEvaluation] = useState(false);
   const [ruleCounter, setRuleCounter] = useState(0);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string[]>>({});
 
-  const rules = diagnosticKnowledge?.rules || [];
+  const rules = useMemo(() => diagnosticKnowledge?.rules || [], [diagnosticKnowledge?.rules]);
 
-  // Evaluate all rules against current state
-  const { triggeredRules, consequences } = evaluateAllRules(rules, {
-    nets: circuit.nets,
-    components: circuit.components,
-    measurements
-  });
+  // Validate all rules and cache results
+  const ruleValidations = useMemo(() => {
+    const validations: Record<string, { valid: boolean; errors: string[] }> = {};
+    rules.forEach(rule => {
+      validations[rule.id] = validateRule(rule);
+    });
+    return validations;
+  }, [rules]);
+
+  // Evaluate all rules against current state with error handling
+  const evaluationResult = useMemo(() => {
+    try {
+      if (!circuit || !circuit.nets || !circuit.components) {
+        console.warn('Circuit data incomplete for evaluation');
+        return { triggeredRules: [], consequences: [] };
+      }
+      
+      return evaluateAllRules(rules, {
+        nets: circuit.nets,
+        components: circuit.components,
+        measurements: measurements || []
+      });
+    } catch (error) {
+      console.error('Error evaluating rules:', error);
+      // Don't call onAddLog here to avoid dependency
+      return { triggeredRules: [], consequences: [] };
+    }
+  }, [rules, circuit, measurements]);
+
+  const { triggeredRules, consequences } = evaluationResult;
 
   const handleAddRule = () => {
     setIsAddingRule(true);
@@ -53,65 +79,101 @@ export default function DiagnosticKnowledgePanel({
   };
 
   const handleCreateRule = () => {
-    // Create a new empty rule with unique IDs using timestamp + counter for collision resistance
-    const timestamp = new Date().getTime();
-    setRuleCounter(prev => prev + 1);
-    const uniqueId = `${circuit.id}-${timestamp}-${ruleCounter}`;
-    const newRule: CircuitRule = {
-      id: `rule-${uniqueId}`,
-      name: 'New Circuit Rule',
-      circuitId: circuit.id,
-      conditions: [],
-      consequence: {
-        id: `consequence-${uniqueId}`,
-        type: 'functional_failure',
-        severity: 'warning',
-        affectedNetIds: [],
-        affectedComponentIds: [],
-        description: 'Describe what fails',
-        explanation: 'Explain why this happens'
-      },
-      enabled: true,
-      category: 'general'
-    };
+    try {
+      // Create a new empty rule with unique IDs using timestamp + counter for collision resistance
+      const timestamp = new Date().getTime();
+      setRuleCounter(prev => prev + 1);
+      const uniqueId = `${circuit.id}-${timestamp}-${ruleCounter}`;
+      const newRule: CircuitRule = {
+        id: `rule-${uniqueId}`,
+        name: 'New Circuit Rule',
+        circuitId: circuit.id,
+        conditions: [],
+        consequence: {
+          id: `consequence-${uniqueId}`,
+          type: 'functional_failure',
+          severity: 'warning',
+          affectedNetIds: [],
+          affectedComponentIds: [],
+          description: 'Describe what fails',
+          explanation: 'Explain why this happens'
+        },
+        enabled: true,
+        category: 'general'
+      };
 
-    const updatedKnowledge: DiagnosticKnowledge = {
-      circuitId: circuit.id,
-      rules: [...rules, newRule],
-      activeSymptoms: diagnosticKnowledge?.activeSymptoms || [],
-      predictedConsequences: diagnosticKnowledge?.predictedConsequences || []
-    };
+      // Validate the new rule
+      const validation = validateRule(newRule);
+      if (!validation.valid) {
+        onAddLog('Created rule has validation warnings', 'warning', validation.errors.join(', '));
+        setValidationErrors({ ...validationErrors, [newRule.id]: validation.errors });
+      }
 
-    onUpdateKnowledge(updatedKnowledge);
-    setIsAddingRule(false);
-    onAddLog(`Created new rule: ${newRule.name}`, 'success');
+      const updatedKnowledge: DiagnosticKnowledge = {
+        circuitId: circuit.id,
+        rules: [...rules, newRule],
+        activeSymptoms: diagnosticKnowledge?.activeSymptoms || [],
+        predictedConsequences: diagnosticKnowledge?.predictedConsequences || []
+      };
+
+      onUpdateKnowledge(updatedKnowledge);
+      setIsAddingRule(false);
+      onAddLog(`Created new rule: ${newRule.name}`, 'success');
+    } catch (error) {
+      console.error('Error creating rule:', error);
+      onAddLog('Failed to create rule', 'error', String(error));
+      setIsAddingRule(false);
+    }
   };
 
   const handleDeleteRule = (ruleId: string) => {
-    const updatedKnowledge: DiagnosticKnowledge = {
-      circuitId: circuit.id,
-      rules: rules.filter(r => r.id !== ruleId),
-      activeSymptoms: diagnosticKnowledge?.activeSymptoms || [],
-      predictedConsequences: diagnosticKnowledge?.predictedConsequences || []
-    };
+    try {
+      const ruleToDelete = rules.find(r => r.id === ruleId);
+      const updatedKnowledge: DiagnosticKnowledge = {
+        circuitId: circuit.id,
+        rules: rules.filter(r => r.id !== ruleId),
+        activeSymptoms: diagnosticKnowledge?.activeSymptoms || [],
+        predictedConsequences: diagnosticKnowledge?.predictedConsequences || []
+      };
 
-    onUpdateKnowledge(updatedKnowledge);
-    onAddLog('Rule deleted', 'info');
+      onUpdateKnowledge(updatedKnowledge);
+      
+      // Clear validation errors for deleted rule
+      const newValidationErrors = { ...validationErrors };
+      delete newValidationErrors[ruleId];
+      setValidationErrors(newValidationErrors);
+      
+      onAddLog(`Rule deleted: ${ruleToDelete?.name || ruleId}`, 'info');
+    } catch (error) {
+      console.error('Error deleting rule:', error);
+      onAddLog('Failed to delete rule', 'error', String(error));
+    }
   };
 
   const handleToggleRule = (ruleId: string) => {
-    const updatedRules = rules.map(rule => 
-      rule.id === ruleId ? { ...rule, enabled: !rule.enabled } : rule
-    );
+    try {
+      const updatedRules = rules.map(rule => 
+        rule.id === ruleId ? { ...rule, enabled: !rule.enabled } : rule
+      );
 
-    const updatedKnowledge: DiagnosticKnowledge = {
-      circuitId: circuit.id,
-      rules: updatedRules,
-      activeSymptoms: diagnosticKnowledge?.activeSymptoms || [],
-      predictedConsequences: diagnosticKnowledge?.predictedConsequences || []
-    };
+      const updatedKnowledge: DiagnosticKnowledge = {
+        circuitId: circuit.id,
+        rules: updatedRules,
+        activeSymptoms: diagnosticKnowledge?.activeSymptoms || [],
+        predictedConsequences: diagnosticKnowledge?.predictedConsequences || []
+      };
 
-    onUpdateKnowledge(updatedKnowledge);
+      onUpdateKnowledge(updatedKnowledge);
+      
+      const rule = rules.find(r => r.id === ruleId);
+      onAddLog(
+        `Rule ${rule?.enabled ? 'disabled' : 'enabled'}: ${rule?.name || ruleId}`, 
+        'info'
+      );
+    } catch (error) {
+      console.error('Error toggling rule:', error);
+      onAddLog('Failed to toggle rule', 'error', String(error));
+    }
   };
 
   const getSeverityIcon = (severity: string) => {
@@ -279,6 +341,21 @@ export default function DiagnosticKnowledgePanel({
                       <strong>Then:</strong>
                       <p>{rule.consequence.description}</p>
                     </div>
+
+                    {/* Validation warnings */}
+                    {ruleValidations[rule.id] && !ruleValidations[rule.id].valid && (
+                      <div className="rule-validation-warnings">
+                        <AlertTriangle className="w-4 h-4 text-yellow-500" />
+                        <div className="validation-content">
+                          <strong>Validation Issues:</strong>
+                          <ul>
+                            {ruleValidations[rule.id].errors.map((error, idx) => (
+                              <li key={idx}>{error}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    )}
 
                     {showEvaluation && (
                       <div className="rule-evaluation">
@@ -526,6 +603,38 @@ export default function DiagnosticKnowledgePanel({
 
         .text-success {
           color: #4CAF50;
+        }
+
+        .rule-validation-warnings {
+          display: flex;
+          gap: 0.5rem;
+          padding: 0.75rem;
+          margin-top: 0.5rem;
+          background: #2a2020;
+          border-left: 3px solid #ff9800;
+          border-radius: 4px;
+          font-size: 0.85rem;
+        }
+
+        .validation-content {
+          flex: 1;
+        }
+
+        .validation-content strong {
+          color: #ff9800;
+          display: block;
+          margin-bottom: 0.25rem;
+        }
+
+        .validation-content ul {
+          margin: 0.25rem 0;
+          padding-left: 1.25rem;
+          list-style-type: disc;
+        }
+
+        .validation-content li {
+          color: #d0d0d0;
+          margin: 0.25rem 0;
         }
 
         .consequences-list {
