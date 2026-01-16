@@ -43,6 +43,20 @@ You don't just troubleshoot. You **think like a diagnostic engineer**.
 
 This is **Cognitive Electronics** — a new category of tools that makes understanding PCBs as natural as reading a map.
 
+### The Semantic Layer: Connecting Cause and Effect
+
+**circuits-D** introduces the missing piece in electronic diagnostics: **causal reasoning**.
+
+Traditional tools show you measurements. We show you **consequences**.
+
+```
+"If this net is low → then this section cannot oscillate"
+"If this transistor saturates → then the rail drops"
+"If this capacitor opens → then the filter stops blocking AC"
+```
+
+This is **semiotic electronics** — the cognitive connection between circuit states, measurements, and functional outcomes. We don't just capture what *is* — we predict what *will happen* and explain *why*.
+
 ---
 
 ## 🎯 For Whom
@@ -190,6 +204,34 @@ Is now: **A fluid, documented, repeatable cognitive workflow.**
   - Steps can reference specific nets and components
   - Support for multiple measurement sources (manual, serial, USB, BLE)
   - Future-ready for hardware integration
+
+### 🧠 Cognitive Diagnostics (NEW!)
+**The Semantic Layer** — Understanding cause and effect in circuits
+
+- **Causal Rule System**
+  - Define "If condition → then consequence" relationships
+  - Link circuit states to functional outcomes
+  - Capture expert knowledge in structured format
+- **Real-Time Rule Evaluation**
+  - Automatic evaluation based on measurements and circuit state
+  - Detects when conditions are met and predicts consequences
+  - Live status indicators for active diagnoses
+- **Multi-Category Support**
+  - Power issues: voltage drops, rail failures, current limiting
+  - Signal problems: oscillation stops, signal loss, filtering failures
+  - Timing issues: propagation delays, clock problems
+  - Component failures: opens, shorts, thermal runaway
+- **Cognitive Explanations**
+  - Not just "what" but "why" — detailed technical explanations
+  - Links affected nets and components
+  - Severity levels: critical, warning, info
+- **Example Rules**
+  - "If VCC < 2.0V → LED cannot illuminate (insufficient forward bias)"
+  - "If current limiting resistor absent → LED thermal runaway and burnout"
+  - "If capacitor ESR high → filter stops blocking AC ripple"
+  - "If base drive low → transistor won't saturate, output rail sags"
+
+This is the **semiotic electronics layer** — making circuit diagnosis a science, not an art.
 
 ### 📊 Diagnostic Logging
 - Real-time activity logging with timestamps

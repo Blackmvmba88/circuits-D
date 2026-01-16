@@ -144,5 +144,117 @@
   ],
   "diagnosticLogs": [],
   "activeCircuitId": "led-regulator-001",
-  "activeWorkflowId": "led-workflow-1"
+  "activeWorkflowId": "led-workflow-1",
+  "diagnosticKnowledge": [
+    {
+      "circuitId": "led-regulator-001",
+      "rules": [
+        {
+          "id": "rule-1",
+          "name": "Low Supply Voltage Prevents LED Operation",
+          "circuitId": "led-regulator-001",
+          "conditions": [
+            {
+              "id": "cond-1",
+              "type": "net_voltage",
+              "targetId": "led-vcc",
+              "operator": "<",
+              "value": 2.0,
+              "description": "VCC voltage is below 2.0V"
+            }
+          ],
+          "consequence": {
+            "id": "cons-1",
+            "type": "no_output",
+            "severity": "critical",
+            "affectedNetIds": ["led-n1"],
+            "affectedComponentIds": ["led-d1"],
+            "description": "LED will not illuminate",
+            "explanation": "The supply voltage is insufficient to overcome the LED forward voltage drop (typically 1.8-2.0V for red LEDs) plus the voltage drop across the current limiting resistor. With VCC below 2.0V, there is not enough potential to drive current through the LED."
+          },
+          "enabled": true,
+          "category": "power"
+        },
+        {
+          "id": "rule-2",
+          "name": "Missing Current Limiting Resistor Causes LED Damage",
+          "circuitId": "led-regulator-001",
+          "conditions": [
+            {
+              "id": "cond-2",
+              "type": "component_state",
+              "targetId": "led-r1",
+              "operator": "absent",
+              "description": "Current limiting resistor R1 is disconnected or missing"
+            }
+          ],
+          "consequence": {
+            "id": "cons-2",
+            "type": "heating",
+            "severity": "critical",
+            "affectedNetIds": ["led-n1"],
+            "affectedComponentIds": ["led-d1"],
+            "description": "LED will draw excessive current and burn out",
+            "explanation": "Without current limiting, the LED will draw as much current as the power supply can provide. LEDs have negative temperature coefficient - as they heat up, their forward voltage drops, causing even more current flow in a thermal runaway condition. This leads to immediate or rapid LED failure."
+          },
+          "enabled": true,
+          "category": "power"
+        },
+        {
+          "id": "rule-3",
+          "name": "High VCC Causes Excessive LED Current",
+          "circuitId": "led-regulator-001",
+          "conditions": [
+            {
+              "id": "cond-3",
+              "type": "net_voltage",
+              "targetId": "led-vcc",
+              "operator": ">",
+              "value": 9.0,
+              "description": "VCC voltage exceeds 9.0V"
+            }
+          ],
+          "consequence": {
+            "id": "cons-3",
+            "type": "heating",
+            "severity": "warning",
+            "affectedNetIds": ["led-vcc", "led-n1"],
+            "affectedComponentIds": ["led-r1", "led-d1"],
+            "description": "Excessive current through LED and resistor causing heating",
+            "explanation": "With a 330Ω resistor and red LED (Vf ≈ 1.8V), the LED current at 9V would be approximately (9V - 1.8V) / 330Ω = 21.8mA, which exceeds typical LED ratings (20mA max). Additionally, the resistor will dissipate (9V - 1.8V)² / 330Ω ≈ 157mW, which may approach or exceed its power rating. This can cause component heating and reduced lifetime."
+          },
+          "enabled": true,
+          "category": "power"
+        },
+        {
+          "id": "rule-4",
+          "name": "Reversed LED Connection Prevents Current Flow",
+          "circuitId": "led-regulator-001",
+          "conditions": [
+            {
+              "id": "cond-4",
+              "type": "measurement",
+              "targetId": "led-step-2",
+              "operator": "<",
+              "value": 0.5,
+              "description": "LED forward voltage measurement is below 0.5V"
+            }
+          ],
+          "consequence": {
+            "id": "cons-4",
+            "type": "no_output",
+            "severity": "warning",
+            "affectedNetIds": ["led-n1", "led-gnd"],
+            "affectedComponentIds": ["led-d1"],
+            "description": "LED is reverse-biased and will not illuminate",
+            "explanation": "When an LED is connected backwards (cathode to positive, anode to ground), it acts as an open circuit in forward bias conditions. The measured voltage across it will be approximately equal to VCC minus the small voltage drop across the current-limiting resistor due to leakage current. A measurement below 0.5V with VCC present indicates the LED may be reversed or shorted."
+          },
+          "enabled": true,
+          "category": "signal"
+        }
+      ],
+      "activeSymptoms": [],
+      "predictedConsequences": []
+    }
+  ]
 }

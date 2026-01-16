@@ -10,10 +10,11 @@ import Board3DViewer from './components/Board3DViewer';
 import ComponentPropertiesPanel from './components/ComponentPropertiesPanel';
 import CircuitBuilder from './components/CircuitBuilder';
 import PhotoCapture from './components/PhotoCapture';
-import type { MeasurementStep, DiagnosticLog, Component3D, Circuit } from './types';
-import { Activity, FileText, ClipboardList, Download, Box, Edit3, Wrench, Camera } from 'lucide-react';
+import DiagnosticKnowledgePanel from './components/DiagnosticKnowledgePanel';
+import type { MeasurementStep, DiagnosticLog, Component3D, Circuit, DiagnosticKnowledge } from './types';
+import { Activity, FileText, ClipboardList, Download, Box, Edit3, Wrench, Camera, Brain } from 'lucide-react';
 
-type View = 'visualization' | 'workflows' | 'logs' | 'export' | '3d' | 'builder' | 'capture';
+type View = 'visualization' | 'workflows' | 'logs' | 'export' | '3d' | 'builder' | 'capture' | 'diagnostics';
 
 function App() {
   const [state, setState] = useAppState();
@@ -183,6 +184,32 @@ function App() {
     });
   };
 
+  const handleUpdateDiagnosticKnowledge = (knowledge: DiagnosticKnowledge) => {
+    setState(prevState => {
+      const existingKnowledgeIndex = prevState.diagnosticKnowledge?.findIndex(
+        k => k.circuitId === knowledge.circuitId
+      );
+
+      const updatedKnowledge = 
+        existingKnowledgeIndex !== undefined && existingKnowledgeIndex >= 0
+          ? prevState.diagnosticKnowledge!.map((k, i) => 
+              i === existingKnowledgeIndex ? knowledge : k
+            )
+          : [...(prevState.diagnosticKnowledge || []), knowledge];
+
+      return {
+        ...prevState,
+        diagnosticKnowledge: updatedKnowledge,
+      };
+    });
+
+    addLog({
+      level: 'success',
+      message: 'Diagnostic knowledge updated',
+      details: `Rules: ${knowledge.rules.length}`,
+    });
+  };
+
   return (
     <div className="app">
       <header className="app-header">
@@ -247,6 +274,13 @@ function App() {
               Workflows
             </button>
             <button
+              className={`tab ${activeView === 'diagnostics' ? 'active' : ''}`}
+              onClick={() => setActiveView('diagnostics')}
+            >
+              <Brain size={18} />
+              Cognitive Diagnostics
+            </button>
+            <button
               className={`tab ${activeView === 'logs' ? 'active' : ''}`}
               onClick={() => setActiveView('logs')}
             >
@@ -305,6 +339,17 @@ function App() {
                 activeWorkflowId={state.activeWorkflowId}
                 onWorkflowSelect={handleWorkflowSelect}
                 onStepUpdate={handleStepUpdate}
+              />
+            )}
+            {activeView === 'diagnostics' && activeCircuit && (
+              <DiagnosticKnowledgePanel
+                circuit={activeCircuit}
+                diagnosticKnowledge={state.diagnosticKnowledge?.find(k => k.circuitId === activeCircuit.id)}
+                measurements={state.workflows
+                  .filter(w => w.circuitId === activeCircuit.id)
+                  .flatMap(w => w.steps)}
+                onUpdateKnowledge={handleUpdateDiagnosticKnowledge}
+                onAddLog={(message, level, details) => addLog({ level, message, details })}
               />
             )}
             {activeView === 'logs' && (
