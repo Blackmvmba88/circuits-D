@@ -11,6 +11,9 @@ import type {
   ConditionOperator 
 } from '../types';
 
+// Tolerance for numeric comparisons (adjustable based on measurement precision)
+const COMPARISON_TOLERANCE = 0.01;
+
 interface EvaluationContext {
   nets: Net[];
   components: Component[];
@@ -89,13 +92,13 @@ function evaluateNumericCondition(
     case '<':
       return target !== undefined && value < target;
     case '=':
-      return target !== undefined && Math.abs(value - target) < 0.01;
+      return target !== undefined && Math.abs(value - target) < COMPARISON_TOLERANCE;
     case '>=':
       return target !== undefined && value >= target;
     case '<=':
       return target !== undefined && value <= target;
     case '!=':
-      return target !== undefined && Math.abs(value - target) >= 0.01;
+      return target !== undefined && Math.abs(value - target) >= COMPARISON_TOLERANCE;
     case 'between':
       return range !== undefined && value >= range.min && value <= range.max;
     default:

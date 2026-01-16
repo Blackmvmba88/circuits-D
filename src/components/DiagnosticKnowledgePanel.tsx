@@ -53,9 +53,10 @@ export default function DiagnosticKnowledgePanel({
   };
 
   const handleCreateRule = () => {
-    // Create a new empty rule with unique IDs using counter
+    // Create a new empty rule with unique IDs using timestamp + counter for collision resistance
+    const timestamp = new Date().getTime();
     setRuleCounter(prev => prev + 1);
-    const uniqueId = `${circuit.id}-${ruleCounter}`;
+    const uniqueId = `${circuit.id}-${timestamp}-${ruleCounter}`;
     const newRule: CircuitRule = {
       id: `rule-${uniqueId}`,
       name: 'New Circuit Rule',
