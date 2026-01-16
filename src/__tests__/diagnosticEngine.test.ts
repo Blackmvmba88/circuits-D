@@ -1,8 +1,6 @@
 // Unit tests for diagnosticEngine validation and robustness
 // These tests document the expected behavior and edge cases
 
-import type { CircuitRule, Condition } from '../types';
-
 /**
  * Test Suite Documentation for Cognitive Diagnostics Engine
  * 

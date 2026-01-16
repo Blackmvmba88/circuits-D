@@ -66,7 +66,8 @@ export default function DiagnosticKnowledgePanel({
       });
     } catch (error) {
       console.error('Error evaluating rules:', error);
-      // Don't call onAddLog here to avoid dependency
+      // Note: onAddLog not called here to avoid adding it as a useMemo dependency,
+      // which would cause re-evaluation on every log change. Errors are logged to console instead.
       return { triggeredRules: [], consequences: [] };
     }
   }, [rules, circuit, measurements]);
@@ -105,7 +106,9 @@ export default function DiagnosticKnowledgePanel({
       // Validate the new rule
       const validation = validateRule(newRule);
       if (!validation.valid) {
-        onAddLog('Created rule has validation warnings', 'warning', validation.errors.join(', '));
+        const errorSummary = validation.errors.slice(0, 3).join(', ');
+        const moreErrors = validation.errors.length > 3 ? ` (${validation.errors.length - 3} more...)` : '';
+        onAddLog('Created rule has validation warnings', 'warning', errorSummary + moreErrors);
         setValidationErrors({ ...validationErrors, [newRule.id]: validation.errors });
       }
 

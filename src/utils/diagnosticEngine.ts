@@ -15,7 +15,13 @@ import type {
 const COMPARISON_TOLERANCE = 0.01;
 
 // Maximum safe numeric value to prevent overflow
+// Note: Using 1e6 for practical circuit measurements. Adjust if working with
+// high-voltage or RF applications that legitimately exceed this range.
 const MAX_SAFE_VALUE = 1e6;
+
+// Valid operators for different condition types
+const NUMERIC_OPERATORS: ConditionOperator[] = ['>', '<', '=', '>=', '<=', '!=', 'between'];
+const BOOLEAN_OPERATORS: ConditionOperator[] = ['present', 'absent'];
 
 interface EvaluationContext {
   nets: Net[];
@@ -39,15 +45,12 @@ function isValidCondition(condition: Condition): boolean {
   }
   
   // Validate operator is appropriate for condition type
-  const numericOperators: ConditionOperator[] = ['>', '<', '=', '>=', '<=', '!=', 'between'];
-  const booleanOperators: ConditionOperator[] = ['present', 'absent'];
-  
   if (condition.type === 'net_voltage' || condition.type === 'measurement') {
-    return numericOperators.includes(condition.operator);
+    return NUMERIC_OPERATORS.includes(condition.operator);
   }
   
   if (condition.type === 'component_state' || condition.type === 'signal_present') {
-    return booleanOperators.includes(condition.operator);
+    return BOOLEAN_OPERATORS.includes(condition.operator);
   }
   
   return false;
@@ -354,7 +357,7 @@ export function explainRuleTrigger(
         switch (condition.type) {
           case 'net_voltage': {
             const net = context.nets.find(n => n.id === condition.targetId);
-            if (net && net.voltage !== undefined && net.voltage !== null) {
+            if (net && net.voltage !== undefined && net.voltage !== null && isValidNumericValue(net.voltage)) {
               explanation += ` (measured: ${net.voltage.toFixed(2)}V)`;
             } else {
               explanation += ' (no measurement)';
