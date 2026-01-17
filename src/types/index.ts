@@ -107,6 +107,49 @@ export interface Board3D {
   components: Component3D[];
 }
 
+// Cognitive Semantics Layer - Causal Relationships
+// "Si este net está bajo, esta sección no puede oscilar"
+// "Si este transistor está saturado, el rail cae"
+
+export type ConditionOperator = '>' | '<' | '=' | '>=' | '<=' | '!=' | 'between' | 'absent' | 'present';
+
+export interface Condition {
+  id: string;
+  type: 'net_voltage' | 'net_current' | 'component_state' | 'measurement' | 'signal_present';
+  targetId: string; // netId or componentId
+  operator: ConditionOperator;
+  value?: number;
+  valueRange?: { min: number; max: number };
+  description: string;
+}
+
+export interface Consequence {
+  id: string;
+  type: 'functional_failure' | 'oscillation_stop' | 'rail_drop' | 'signal_loss' | 'heating' | 'no_output';
+  severity: 'critical' | 'warning' | 'info';
+  affectedNetIds: string[];
+  affectedComponentIds: string[];
+  description: string;
+  explanation: string; // Why this happens (the cognitive link)
+}
+
+export interface CircuitRule {
+  id: string;
+  name: string;
+  circuitId: string;
+  conditions: Condition[]; // If these conditions are met...
+  consequence: Consequence; // ...then this happens
+  enabled: boolean;
+  category: 'power' | 'signal' | 'timing' | 'filtering' | 'amplification' | 'regulation' | 'general';
+}
+
+export interface DiagnosticKnowledge {
+  circuitId: string;
+  rules: CircuitRule[];
+  activeSymptoms: string[]; // IDs of currently detected symptoms
+  predictedConsequences: Consequence[]; // What the system predicts will fail
+}
+
 export interface AppState {
   circuits: Circuit[];
   workflows: MeasurementWorkflow[];
@@ -117,4 +160,5 @@ export interface AppState {
   activeWorkflowId?: string;
   board3D?: Board3D;
   selectedComponentId?: string;
+  diagnosticKnowledge?: DiagnosticKnowledge[];
 }

@@ -43,6 +43,20 @@ You don't just troubleshoot. You **think like a diagnostic engineer**.
 
 This is **Cognitive Electronics** — a new category of tools that makes understanding PCBs as natural as reading a map.
 
+### The Semantic Layer: Connecting Cause and Effect
+
+**circuits-D** introduces the missing piece in electronic diagnostics: **causal reasoning**.
+
+Traditional tools show you measurements. We show you **consequences**.
+
+```
+"If this net is low → then this section cannot oscillate"
+"If this transistor saturates → then the rail drops"
+"If this capacitor opens → then the filter stops blocking AC"
+```
+
+This is **semiotic electronics** — the cognitive connection between circuit states, measurements, and functional outcomes. We don't just capture what *is* — we predict what *will happen* and explain *why*.
+
 ---
 
 ## 🎯 For Whom
@@ -191,6 +205,34 @@ Is now: **A fluid, documented, repeatable cognitive workflow.**
   - Support for multiple measurement sources (manual, serial, USB, BLE)
   - Future-ready for hardware integration
 
+### 🧠 Cognitive Diagnostics (NEW!)
+**The Semantic Layer** — Understanding cause and effect in circuits
+
+- **Causal Rule System**
+  - Define "If condition → then consequence" relationships
+  - Link circuit states to functional outcomes
+  - Capture expert knowledge in structured format
+- **Real-Time Rule Evaluation**
+  - Automatic evaluation based on measurements and circuit state
+  - Detects when conditions are met and predicts consequences
+  - Live status indicators for active diagnoses
+- **Multi-Category Support**
+  - Power issues: voltage drops, rail failures, current limiting
+  - Signal problems: oscillation stops, signal loss, filtering failures
+  - Timing issues: propagation delays, clock problems
+  - Component failures: opens, shorts, thermal runaway
+- **Cognitive Explanations**
+  - Not just "what" but "why" — detailed technical explanations
+  - Links affected nets and components
+  - Severity levels: critical, warning, info
+- **Example Rules**
+  - "If VCC < 2.0V → LED cannot illuminate (insufficient forward bias)"
+  - "If current limiting resistor absent → LED thermal runaway and burnout"
+  - "If capacitor ESR high → filter stops blocking AC ripple"
+  - "If base drive low → transistor won't saturate, output rail sags"
+
+This is the **semiotic electronics layer** — making circuit diagnosis a science, not an art.
+
 ### 📊 Diagnostic Logging
 - Real-time activity logging with timestamps
 - Four log levels: Info, Success, Warning, Error
@@ -265,9 +307,10 @@ circuits-D/
 │   ├── components/          # React components
 │   │   ├── ComponentVisualization.tsx
 │   │   ├── Board3DViewer.tsx
-│   │   ├── ComponentPropertiesPanel.tsx  # NEW
-│   │   ├── CircuitBuilder.tsx            # NEW
-│   │   ├── PhotoCapture.tsx              # NEW
+│   │   ├── ComponentPropertiesPanel.tsx  # 3D component editor
+│   │   ├── CircuitBuilder.tsx            # Circuit creation UI
+│   │   ├── PhotoCapture.tsx              # Photo upload interface
+│   │   ├── DiagnosticKnowledgePanel.tsx  # NEW - Cognitive diagnostics
 │   │   ├── MeasurementWorkflows.tsx
 │   │   ├── DiagnosticLogging.tsx
 │   │   ├── PersonasSidebar.tsx
@@ -279,7 +322,8 @@ circuits-D/
 │   ├── types/              # TypeScript interfaces
 │   │   └── index.ts
 │   ├── utils/              # Utility functions
-│   │   └── export.ts
+│   │   ├── export.ts
+│   │   └── diagnosticEngine.ts  # NEW - Rule evaluation engine
 │   ├── App.tsx             # Main application component
 │   ├── App.css             # Application styles
 │   ├── main.tsx            # Application entry point
@@ -328,6 +372,36 @@ Upload photos of physical PCBs for future analysis (Phase 0 stub):
 
 ### Workflows
 Create and execute measurement workflows with step-by-step procedures. Track progress and record measurements against expected values.
+
+### Cognitive Diagnostics (NEW!)
+**The Semantic Layer for Circuit Understanding**
+
+Define and evaluate causal relationships in your circuits:
+
+1. **Create Rules**: Click "Add Rule" to define new causal relationships
+   - Conditions: "If this net voltage is < 2.0V..."
+   - Consequences: "...then LED cannot illuminate"
+   - Categories: Power, Signal, Timing, Filtering, etc.
+
+2. **Automatic Evaluation**: Rules are continuously evaluated against:
+   - Current net voltages
+   - Measurement results
+   - Component states
+   
+3. **Live Diagnostics**: When conditions are met:
+   - Rules "trigger" and display in the "Active Diagnoses" section
+   - Severity indicators (critical/warning/info) show impact
+   - Detailed explanations describe the "why" behind the failure
+   
+4. **Example Rule** (from LED circuit):
+   ```
+   IF: VCC voltage is below 2.0V
+   THEN: LED will not illuminate
+   WHY: Insufficient voltage to overcome LED forward voltage drop 
+        (typically 1.8-2.0V) plus resistor voltage drop
+   ```
+
+This transforms circuit diagnosis from an art into a documented, repeatable science.
 
 ### Diagnostic Logs
 Monitor all system activities, measurement results, and events in real-time. Filter by severity and expand for detailed information.
