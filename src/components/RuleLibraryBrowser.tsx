@@ -8,11 +8,10 @@ import {
   ChevronUp,
   CheckCircle
 } from 'lucide-react';
-import { getAllRuleTemplates, getRulesByCategory, getRuleCount } from '../utils/ruleLibrary';
-import type { CircuitRule } from '../types';
+import { getAllRuleTemplates, getRulesByCategory, getRuleCount, type RuleTemplate } from '../utils/ruleLibrary';
 
 interface RuleLibraryBrowserProps {
-  onApplyRule: (ruleTemplate: Partial<CircuitRule>) => void;
+  onApplyRule: (ruleTemplate: RuleTemplate) => void;
   onClose?: () => void;
 }
 
@@ -60,7 +59,7 @@ export default function RuleLibraryBrowser({
     setExpandedRules(newExpanded);
   };
 
-  const handleApplyRule = (ruleTemplate: Partial<CircuitRule>) => {
+  const handleApplyRule = (ruleTemplate: RuleTemplate) => {
     onApplyRule(ruleTemplate);
   };
 

@@ -2,13 +2,27 @@
 // 40-60 rules that capture how test engineers think about circuits
 // This is the "semiotic electronics layer" - connecting symptoms to causes
 
-import type { CircuitRule } from '../types';
+import type { Consequence } from '../types';
+
+/**
+ * Rule template for library - has partial Consequence that will be completed when applied
+ */
+export interface RuleTemplate {
+  name: string;
+  category: 'power' | 'signal' | 'timing' | 'filtering' | 'amplification' | 'regulation' | 'general';
+  enabled: boolean;
+  consequence: Omit<Consequence, 'id' | 'affectedNetIds' | 'affectedComponentIds'> & {
+    id?: string;
+    affectedNetIds?: string[];
+    affectedComponentIds?: string[];
+  };
+}
 
 /**
  * Power Supply Rules
  * Rules related to voltage rails, current capacity, and power distribution
  */
-export const powerRules: Partial<CircuitRule>[] = [
+export const powerRules: RuleTemplate[] = [
   {
     name: 'Rail Voltage Below Minimum',
     category: 'power',
@@ -71,7 +85,7 @@ export const powerRules: Partial<CircuitRule>[] = [
  * Signal Path Rules
  * Rules for analog and digital signal integrity
  */
-export const signalRules: Partial<CircuitRule>[] = [
+export const signalRules: RuleTemplate[] = [
   {
     name: 'Signal Missing at Output',
     category: 'signal',
@@ -132,7 +146,7 @@ export const signalRules: Partial<CircuitRule>[] = [
 /**
  * Oscillator and Timing Rules
  */
-export const timingRules: Partial<CircuitRule>[] = [
+export const timingRules: RuleTemplate[] = [
   {
     name: 'Oscillator Not Starting',
     category: 'timing',
@@ -193,7 +207,7 @@ export const timingRules: Partial<CircuitRule>[] = [
 /**
  * Component-Specific Rules
  */
-export const componentRules: Partial<CircuitRule>[] = [
+export const componentRules: RuleTemplate[] = [
   {
     name: 'LED No Current Flow',
     category: 'power',
@@ -298,7 +312,7 @@ export const componentRules: Partial<CircuitRule>[] = [
 /**
  * Filtering and Noise Rules
  */
-export const filteringRules: Partial<CircuitRule>[] = [
+export const filteringRules: RuleTemplate[] = [
   {
     name: 'Decoupling Capacitor Missing',
     category: 'filtering',
@@ -359,7 +373,7 @@ export const filteringRules: Partial<CircuitRule>[] = [
 /**
  * Thermal Rules
  */
-export const thermalRules: Partial<CircuitRule>[] = [
+export const thermalRules: RuleTemplate[] = [
   {
     name: 'Component Overheating',
     category: 'power',
@@ -409,7 +423,7 @@ export const thermalRules: Partial<CircuitRule>[] = [
 /**
  * Digital Logic Rules
  */
-export const digitalRules: Partial<CircuitRule>[] = [
+export const digitalRules: RuleTemplate[] = [
   {
     name: 'Logic Level Threshold Violation',
     category: 'signal',
@@ -470,7 +484,7 @@ export const digitalRules: Partial<CircuitRule>[] = [
 /**
  * Protection Circuit Rules
  */
-export const protectionRules: Partial<CircuitRule>[] = [
+export const protectionRules: RuleTemplate[] = [
   {
     name: 'Overcurrent Protection Triggered',
     category: 'power',
@@ -523,7 +537,7 @@ export const cognitiveRuleLibrary = {
 /**
  * Get all rules as flat array
  */
-export function getAllRuleTemplates(): Partial<CircuitRule>[] {
+export function getAllRuleTemplates(): RuleTemplate[] {
   return [
     ...powerRules,
     ...signalRules,
@@ -541,7 +555,7 @@ export function getAllRuleTemplates(): Partial<CircuitRule>[] {
  */
 export function getRulesByCategory(
   category: 'power' | 'signal' | 'timing' | 'filtering' | 'amplification' | 'regulation' | 'general'
-): Partial<CircuitRule>[] {
+): RuleTemplate[] {
   return getAllRuleTemplates().filter(rule => rule.category === category);
 }
 

@@ -34,9 +34,12 @@ export interface HardwareInterface {
  * Uses Web Serial API for browser-based serial communication
  */
 export class SerialHardwareInterface implements HardwareInterface {
-  private port: unknown = null; // SerialPort type not available in standard TypeScript
-  private reader: unknown = null;
-  private writer: unknown = null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private port: any = null; // SerialPort type not available in standard TypeScript
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private reader: any = null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private writer: any = null;
   private connected = false;
   private config?: HardwareConfig;
 
@@ -208,15 +211,17 @@ export class SerialHardwareInterface implements HardwareInterface {
  * Uses Web Bluetooth API for BLE communication
  */
 export class BLEHardwareInterface implements HardwareInterface {
-  private device: unknown = null; // BluetoothDevice type
-  private server: unknown = null;
-  private service: unknown = null;
-  private characteristic: unknown = null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private device: any = null; // BluetoothDevice type
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private server: any = null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private service: any = null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private characteristic: any = null;
   private connected = false;
-  private config?: HardwareConfig;
 
   async connect(config: HardwareConfig): Promise<boolean> {
-    this.config = config;
 
     // Check if Web Bluetooth API is available
     if (!('bluetooth' in navigator)) {
