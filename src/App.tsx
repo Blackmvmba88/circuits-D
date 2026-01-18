@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import './App.css';
 import { useAppState } from './hooks/useAppState';
 import ComponentVisualization from './components/ComponentVisualization';
@@ -11,10 +11,13 @@ import ComponentPropertiesPanel from './components/ComponentPropertiesPanel';
 import CircuitBuilder from './components/CircuitBuilder';
 import PhotoCapture from './components/PhotoCapture';
 import DiagnosticKnowledgePanel from './components/DiagnosticKnowledgePanel';
+import TechnicalNarrativesPanel from './components/TechnicalNarrativesPanel';
 import type { MeasurementStep, DiagnosticLog, Component3D, Circuit, DiagnosticKnowledge } from './types';
-import { Activity, FileText, ClipboardList, Download, Box, Edit3, Wrench, Camera, Brain } from 'lucide-react';
+import { Activity, FileText, ClipboardList, Download, Box, Edit3, Wrench, Camera, Brain, BookText } from 'lucide-react';
+import { generateWorkflowNarratives } from './utils/narrativeGenerator';
+import { evaluateAllRules } from './utils/diagnosticEngine';
 
-type View = 'visualization' | 'workflows' | 'logs' | 'export' | '3d' | 'builder' | 'capture' | 'diagnostics';
+type View = 'visualization' | 'workflows' | 'logs' | 'export' | '3d' | 'builder' | 'capture' | 'diagnostics' | 'narratives';
 
 function App() {
   const [state, setState] = useAppState();
@@ -22,6 +25,56 @@ function App() {
   const [editMode, setEditMode] = useState(false);
 
   const activeCircuit = state.circuits.find(c => c.id === state.activeCircuitId);
+
+  // Generate narratives from completed measurements
+  const narratives = useMemo(() => {
+    if (!activeCircuit || !state.narratives) return [];
+    
+    // Get existing narratives from state
+    const existingNarratives = state.narratives || [];
+    
+    // Check if we need to generate new narratives
+    const completedMeasurements = state.workflows
+      .filter(w => w.circuitId === activeCircuit.id)
+      .flatMap(w => w.steps)
+      .filter(s => s.status === 'complete' && s.actualValue);
+    
+    // Get diagnostic knowledge for the circuit
+    const knowledge = state.diagnosticKnowledge?.find(k => k.circuitId === activeCircuit.id);
+    const rules = knowledge?.rules || [];
+    
+    // Evaluate rules against current state
+    const { triggeredRules } = evaluateAllRules(rules, {
+      nets: activeCircuit.nets,
+      components: activeCircuit.components,
+      measurements: completedMeasurements
+    });
+    
+    // Generate narratives for new completed measurements
+    const newNarratives = generateWorkflowNarratives(
+      {
+        circuit: activeCircuit,
+        triggeredRules,
+        consequences: triggeredRules.map(r => r.consequence)
+      },
+      completedMeasurements
+    );
+    
+    // Merge with existing, avoiding duplicates
+    const allNarratives = [...existingNarratives];
+    for (const narrative of newNarratives) {
+      const exists = allNarratives.some(n => 
+        n.netId === narrative.netId && 
+        n.componentId === narrative.componentId &&
+        Math.abs(new Date(n.timestamp).getTime() - new Date(narrative.timestamp).getTime()) < 1000
+      );
+      if (!exists) {
+        allNarratives.push(narrative);
+      }
+    }
+    
+    return allNarratives;
+  }, [activeCircuit, state.workflows, state.diagnosticKnowledge, state.narratives]);
 
   const handlePersonaToggle = (personaId: string) => {
     setState(prevState => ({
@@ -84,6 +137,39 @@ function App() {
         details: updates.actualValue ? `Measured value: ${updates.actualValue}` : undefined,
         workflowId,
       });
+      
+      // Generate narrative if measurement is complete
+      if (updates.status === 'complete' && updates.actualValue && activeCircuit) {
+        const knowledge = state.diagnosticKnowledge?.find(k => k.circuitId === activeCircuit.id);
+        const rules = knowledge?.rules || [];
+        
+        const completedMeasurements = state.workflows
+          .filter(w => w.circuitId === activeCircuit.id)
+          .flatMap(w => w.steps)
+          .filter(s => s.status === 'complete');
+        
+        const { triggeredRules } = evaluateAllRules(rules, {
+          nets: activeCircuit.nets,
+          components: activeCircuit.components,
+          measurements: completedMeasurements
+        });
+        
+        const newNarratives = generateWorkflowNarratives(
+          {
+            circuit: activeCircuit,
+            triggeredRules,
+            consequences: triggeredRules.map(r => r.consequence)
+          },
+          [{ ...step, ...updates } as MeasurementStep]
+        );
+        
+        if (newNarratives.length > 0) {
+          setState(prev => ({
+            ...prev,
+            narratives: [...(prev.narratives || []), ...newNarratives]
+          }));
+        }
+      }
     }
   };
 
@@ -210,6 +296,18 @@ function App() {
     });
   };
 
+  const handleClearNarratives = () => {
+    setState(prevState => ({
+      ...prevState,
+      narratives: [],
+    }));
+    
+    addLog({
+      level: 'info',
+      message: 'Technical narratives cleared',
+    });
+  };
+
   return (
     <div className="app">
       <header className="app-header">
@@ -281,6 +379,13 @@ function App() {
               Cognitive Diagnostics
             </button>
             <button
+              className={`tab ${activeView === 'narratives' ? 'active' : ''}`}
+              onClick={() => setActiveView('narratives')}
+            >
+              <BookText size={18} />
+              Technical Narratives
+            </button>
+            <button
               className={`tab ${activeView === 'logs' ? 'active' : ''}`}
               onClick={() => setActiveView('logs')}
             >
@@ -350,6 +455,12 @@ function App() {
                   .flatMap(w => w.steps)}
                 onUpdateKnowledge={handleUpdateDiagnosticKnowledge}
                 onAddLog={(message, level, details) => addLog({ level, message, details })}
+              />
+            )}
+            {activeView === 'narratives' && (
+              <TechnicalNarrativesPanel
+                narratives={narratives}
+                onClear={handleClearNarratives}
               />
             )}
             {activeView === 'logs' && (
