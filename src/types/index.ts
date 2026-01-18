@@ -150,6 +150,21 @@ export interface DiagnosticKnowledge {
   predictedConsequences: Consequence[]; // What the system predicts will fail
 }
 
+export interface TechnicalNarrative {
+  id: string;
+  timestamp: Date;
+  netId?: string;
+  componentId?: string;
+  expected: string;
+  observed: string;
+  decision: 'pass' | 'fail' | 'warning' | 'unknown';
+  probableCause?: string;
+  fullNarrative: string;
+  severity: 'critical' | 'warning' | 'info';
+  technicalExplanation: string;
+  recommendedActions: string[];
+}
+
 export interface AppState {
   circuits: Circuit[];
   workflows: MeasurementWorkflow[];
@@ -161,4 +176,5 @@ export interface AppState {
   board3D?: Board3D;
   selectedComponentId?: string;
   diagnosticKnowledge?: DiagnosticKnowledge[];
+  narratives?: TechnicalNarrative[];
 }

@@ -253,6 +253,77 @@ Is now: **A fluid, documented, repeatable cognitive workflow.**
 
 This is the **semiotic electronics layer** — making circuit diagnosis a science, not an art.
 
+### 📖 Technical Narratives (NEW!)
+**Expected vs. Observed → Decision → Documentation**
+
+The missing piece in electronic debugging — technical narratives that transform measurements into conclusions:
+
+- **Automated Narrative Generation**
+  - Every measurement becomes a technical conclusion
+  - Format: "This rail should be 5V ±5%. Observed: 3.2V. Probable cause: saturation by LED + missing limiter"
+  - Compares expected vs. observed with intelligent decision logic
+- **Intelligent Decision Making**
+  - PASS: Within tolerance
+  - WARNING: Outside tolerance but manageable
+  - FAIL: Significant deviation requiring attention
+- **Causal Reasoning Integration**
+  - Links measurements to diagnostic rules
+  - Identifies probable causes automatically
+  - Provides technical explanations with physics/EE theory
+- **Actionable Recommendations**
+  - Specific next steps for each finding
+  - Context-aware suggestions based on failure mode
+  - Guided troubleshooting procedures
+- **Complete Documentation**
+  - Full technical narrative for each measurement
+  - Timestamp and traceability
+  - Links to affected nets and components
+
+**Example Narrative:**
+> *"Check LED Forward Voltage: Expected 1.85V ±8.1% at D1 (N1). Observed: 0.3V. Result: FAIL. Probable cause: LED is reverse-biased and will not illuminate. When an LED is connected backwards, it acts as an open circuit. Recommended actions: (1) Check LED polarity, (2) Verify LED not damaged, (3) Measure out-of-circuit."*
+
+### 🔌 Hardware Integration (NEW!)
+**Real measurement sources, not just manual entry**
+
+- **Serial Communication (Arduino/Teensy)**
+  - Web Serial API support
+  - Command protocol: `READ:VOLTAGE:netId`
+  - Configurable baud rate (default 9600)
+  - Automatic device enumeration
+- **BLE Support (ESP32 ADC)**
+  - Web Bluetooth API integration
+  - Wireless measurement capability
+  - Multi-channel ADC support
+  - 4-byte float transmission
+- **USB-VCP (Multimeters)**
+  - Virtual COM Port devices
+  - Common multimeter protocol support
+  - Plug-and-play operation
+- **Manual Entry (Backward Compatible)**
+  - Traditional user input
+  - Same workflow as before
+  - No hardware required
+
+### 📚 Cognitive Rule Library (NEW!)
+**57 expert diagnostic rules that encode how test engineers think**
+
+- **Power Rules (5)**: Rail sag, regulator saturation, polarity protection
+- **Signal Rules (5)**: Signal loss, attenuation, bias problems, coupling
+- **Timing Rules (5)**: Oscillator failures, clock issues, jitter, PLL
+- **Component Rules (9)**: LED, resistor, capacitor, diode, transistor, op-amp behaviors
+- **Filtering Rules (5)**: Decoupling, ground bounce, EMI, noise rejection
+- **Thermal Rules (4)**: Overheating, thermal runaway, protection circuits
+- **Digital Rules (5)**: Logic levels, floating inputs, bus contention, timing violations
+- **Protection Rules (3)**: Overcurrent, ESD, overvoltage protection
+
+**Interactive Rule Browser:**
+- Search and filter by category
+- Apply rules to circuits with one click
+- Full explanations for each rule
+- Pre-built expert knowledge ready to use
+
+
+
 ### 📊 Diagnostic Logging
 - Real-time activity logging with timestamps
 - Four log levels: Info, Success, Warning, Error
@@ -330,7 +401,9 @@ circuits-D/
 │   │   ├── ComponentPropertiesPanel.tsx  # 3D component editor
 │   │   ├── CircuitBuilder.tsx            # Circuit creation UI
 │   │   ├── PhotoCapture.tsx              # Photo upload interface
-│   │   ├── DiagnosticKnowledgePanel.tsx  # NEW - Cognitive diagnostics
+│   │   ├── DiagnosticKnowledgePanel.tsx  # Cognitive diagnostics
+│   │   ├── TechnicalNarrativesPanel.tsx  # NEW - Technical narratives display
+│   │   ├── RuleLibraryBrowser.tsx        # NEW - Rule library browser
 │   │   ├── MeasurementWorkflows.tsx
 │   │   ├── DiagnosticLogging.tsx
 │   │   ├── PersonasSidebar.tsx
@@ -343,7 +416,10 @@ circuits-D/
 │   │   └── index.ts
 │   ├── utils/              # Utility functions
 │   │   ├── export.ts
-│   │   └── diagnosticEngine.ts  # NEW - Rule evaluation engine
+│   │   ├── diagnosticEngine.ts      # Rule evaluation engine
+│   │   ├── narrativeGenerator.ts    # NEW - Technical narrative generation
+│   │   ├── hardwareInterface.ts     # NEW - Hardware abstraction layer
+│   │   └── ruleLibrary.ts          # NEW - 57 cognitive rules
 │   ├── App.tsx             # Main application component
 │   ├── App.css             # Application styles
 │   ├── main.tsx            # Application entry point
@@ -356,6 +432,7 @@ circuits-D/
 ├── tsconfig.json           # TypeScript configuration
 ├── vite.config.ts          # Vite configuration
 ├── CONTRIBUTING.md         # Contribution guidelines
+├── COGNITIVE_FLOW.md       # NEW - Technical narrative system docs
 └── ROADMAP.md              # 3D Viewer development roadmap
 ```
 
@@ -423,6 +500,77 @@ Define and evaluate causal relationships in your circuits:
 
 This transforms circuit diagnosis from an art into a documented, repeatable science.
 
+### Technical Narratives (NEW!)
+**The Cognitive Loop: Expected vs. Observed → Decision → Documentation**
+
+View automatically generated technical narratives for your measurements:
+
+1. **Complete Measurements**: As you complete measurement steps, narratives are automatically generated
+2. **View Narratives**: Click "Technical Narratives" tab to see all generated conclusions
+3. **Expand Details**: Click any narrative to see:
+   - Expected vs. Observed comparison
+   - Probable cause analysis
+   - Technical explanation
+   - Recommended troubleshooting actions
+4. **Filter by Result**: See Pass/Warning/Fail statistics at a glance
+
+**Example Workflow:**
+```
+1. Measure VCC: 4.98V (Expected: 5.0V ±2%)
+   → Narrative: "PASS - Nominal operation"
+
+2. Measure LED voltage: 0.3V (Expected: 1.7V-2.0V)
+   → Narrative: "FAIL - LED is reverse-biased. Check polarity."
+```
+
+### Rule Library Browser (NEW!)
+**57 Expert Rules Ready to Apply**
+
+Browse and apply diagnostic rules from the cognitive library:
+
+1. **Open Rule Library**: In Cognitive Diagnostics view, click "Browse Rule Library"
+2. **Search Rules**: Use search box to find relevant rules
+3. **Filter by Category**: Select Power, Signal, Timing, etc.
+4. **View Details**: Click any rule to see full explanation
+5. **Apply to Circuit**: Click "Apply" to add rule to your circuit
+6. **Configure Conditions**: After applying, set specific nets, voltages, and thresholds
+
+**Quick Start:**
+- For LED circuits: Apply "Low Supply Voltage Prevents LED Operation" and "LED Thermal Runaway" rules
+- For oscillators: Apply "Oscillator Not Starting" and "Clock Signal Absent" rules
+- For power supplies: Apply "Rail Voltage Below Minimum" and "Voltage Regulator Saturation" rules
+
+### Hardware Integration (NEW!)
+**Connect Real Measurement Instruments**
+
+1. **Serial (Arduino/Teensy)**:
+   ```typescript
+   // Arduino code (upload to device):
+   void setup() { Serial.begin(9600); }
+   void loop() {
+     if (Serial.available()) {
+       String cmd = Serial.readStringUntil('\n');
+       if (cmd.startsWith("READ:VOLTAGE:")) {
+         float v = analogRead(A0) * (5.0 / 1023.0);
+         Serial.print("VOLTAGE:");
+         Serial.println(v, 2);
+       }
+     }
+   }
+   ```
+   
+   In circuits-D: Select "Serial" as measurement source, connect, and measurements are automatic!
+
+2. **BLE (ESP32)**:
+   - Select "BLE" as measurement source
+   - Click connect and choose your ESP32
+   - Measurements read wirelessly via Bluetooth
+
+3. **USB-VCP (Multimeters)**:
+   - Many USB multimeters appear as serial ports
+   - Select "USB" as measurement source
+   - Automatic data acquisition
+
 ### Diagnostic Logs
 Monitor all system activities, measurement results, and events in real-time. Filter by severity and expand for detailed information.
 
@@ -452,6 +600,8 @@ Generate professional documentation in multiple formats:
 - `Component3D`: 3D component with position, rotation, size, and net connections
 - `MeasurementWorkflow`: Guided measurement procedures with steps and measurement source support
 - `MeasurementSource`: Support for manual, serial, USB, and BLE measurement sources
+- `CircuitRule`: Causal diagnostic rule with conditions and consequences
+- `TechnicalNarrative`: Generated technical conclusion from measurements
 - `DiagnosticLog`: System activity and event logging
 - `Persona`: Expert role definitions
 - `AppState`: Global application state with automatic persistence
@@ -469,6 +619,7 @@ Check out the `examples/` directory for sample circuits:
 
 ### Core Documentation
 - **[COGNITIVE_ECOSYSTEM.md](./COGNITIVE_ECOSYSTEM.md)** - Complete integrated vision: 7 system layers, development phases, rule library, and testing strategy
+- **[COGNITIVE_FLOW.md](./COGNITIVE_FLOW.md)** - Technical narrative system: Expected vs. Observed → Decision → Documentation
 - **[README.md](./README.md)** - Main project documentation (you are here)
 - **[ROADMAP.md](./ROADMAP.md)** - Development phases and timeline
 - **[COGNITIVE_DIAGNOSTICS.md](./COGNITIVE_DIAGNOSTICS.md)** - Semantic layer and causal reasoning details
