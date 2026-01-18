@@ -1,5 +1,7 @@
 # Cognitive Diagnostics: The Semantic Layer for Electronics
 
+> 📖 **Part of the complete cognitive ecosystem** - see [COGNITIVE_ECOSYSTEM.md](./COGNITIVE_ECOSYSTEM.md) for the integrated vision.
+
 ## What is This?
 
 Traditional electronic tools give you measurements. **Cognitive Diagnostics gives you understanding.**

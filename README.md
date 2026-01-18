@@ -43,6 +43,26 @@ You don't just troubleshoot. You **think like a diagnostic engineer**.
 
 This is **Cognitive Electronics** — a new category of tools that makes understanding PCBs as natural as reading a map.
 
+---
+
+## 🌐 The Complete Vision: Cognitive Ecosystem
+
+**circuits-D** is more than a tool — it's a complete **cognitive ecosystem** integrating seven layers from physical reality to human understanding.
+
+📖 **See the complete vision**: [COGNITIVE_ECOSYSTEM.md](./COGNITIVE_ECOSYSTEM.md)
+
+This comprehensive document describes:
+- **7 System Layers**: Physical, Geometric, Electrical, Semantic, Cognitive, Pedagogical, and Aesthetic
+- **Development Phases**: From foundation to advanced features
+- **Rule Library**: Embedded expertise for diagnostics (power, signal, timing, thermal, etc.)
+- **Magnetic Breadboard**: Physical prototyping with rule enforcement
+- **Testing Strategy**: Cognitive tests, geometric validation, and hardware integration
+- **Integration Examples**: How all layers work together in real scenarios
+
+**"De átomo → a mente → a gusto. Sin fracturas. Sin mutilaciones. Un organismo completo."**
+
+---
+
 ### The Semantic Layer: Connecting Cause and Effect
 
 **circuits-D** introduces the missing piece in electronic diagnostics: **causal reasoning**.
@@ -445,9 +465,18 @@ Check out the `examples/` directory for sample circuits:
   - Measurement workflow for verification
   - Run with `npm run demo` to load automatically
 
+## Documentation
+
+### Core Documentation
+- **[COGNITIVE_ECOSYSTEM.md](./COGNITIVE_ECOSYSTEM.md)** - Complete integrated vision: 7 system layers, development phases, rule library, and testing strategy
+- **[README.md](./README.md)** - Main project documentation (you are here)
+- **[ROADMAP.md](./ROADMAP.md)** - Development phases and timeline
+- **[COGNITIVE_DIAGNOSTICS.md](./COGNITIVE_DIAGNOSTICS.md)** - Semantic layer and causal reasoning details
+- **[CONTRIBUTING.md](./CONTRIBUTING.md)** - Contribution guidelines
+
 ## Future Enhancements
 
-See [ROADMAP.md](./ROADMAP.md) for detailed development plans.
+See [ROADMAP.md](./ROADMAP.md) and [COGNITIVE_ECOSYSTEM.md](./COGNITIVE_ECOSYSTEM.md) for detailed development plans.
 
 **Phase 1 Roadmap (Computer Vision Integration)**:
 - Manual component annotation from photos

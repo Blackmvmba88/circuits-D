@@ -2,6 +2,8 @@
 
 This document outlines the phased implementation plan for the 3D Board Viewer feature in Circuits Lab.
 
+> 📖 **For the complete integrated vision** of all system layers and development phases, see [COGNITIVE_ECOSYSTEM.md](./COGNITIVE_ECOSYSTEM.md).
+
 ## ✅ Phase 1 – Viewer 3D (COMPLETED)
 
 **Goal**: Create a basic 3D visualization of PCB boards and components.
